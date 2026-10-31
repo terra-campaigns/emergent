@@ -15,10 +15,15 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
 
 ---
 
-## 2. Git Operations Constraint
+## 2. Git Operations & Atomic Checkpoint Commits
 
-* **NEVER** run `git commit` or autonomously commit changes on the user's behalf.
-* Always leave modified, new, or deleted files in the working directory (unstaged or staged) for the human developer to review, verify, and commit.
+* **Atomic Checkpoint Commits Permitted:** Within this repository (`emergent`) only, the autonomous agent is authorized by the developer to execute `git commit` strictly for documenting verified atomic checkpoint gates:
+  1. **Specification Approval Gates:** Committing approved design documents and review reports upon human sign-off.
+  2. **Automated Verification Gates:** Committing clean, passing state implementations after 100% of automated unit tests pass.
+  3. **Milestone Completions:** Committing major task board updates (`TASKS.md`) when a roadmap phase completes.
+* **Prohibition on Speculative Commits:** The agent must never run `git commit` for intermediate, broken, failing, or unreviewed work-in-progress code.
+* **Conventional Commits:** All commit messages must follow the Conventional Commits format in British English (e.g. `docs: approve milestone 1 core gameplay loop specification`, `feat(engine): implement pure reducer tick loop`).
+* **Clean Working Tree:** Staged changes must strictly include only the files relevant to that specific atomic gate.
 
 ---
 
@@ -39,3 +44,18 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
 
 * **Decoupled Simulation:** Keep the simulation engine (`engine/`) strictly headless and decoupled from the presentation client (`client/`). The simulation state must be fully testable without a browser or graphical context.
 * **Automated Verification:** Every new mechanic, tick update, or state transition must be accompanied by unit tests. Do not declare a feature complete without running automated test suites.
+
+---
+
+## 6. Resource & Quota Guardrails
+
+* **Default Model:** All autonomous agents, subagent invocations, and LLM completions must operate using Gemini Flash unless explicitly overridden by the human developer.
+* **Quota Safeguards:** Autonomous work must cease immediately if the 5-hour rolling limit drops below 20%, or if the weekly limit drops below 30%. When triggered, the agent must pause, summarise the current state in `TASKS.md`, and await human instructions before proceeding.
+
+---
+
+## 7. Narrative Sovereignty & Lore Authorship
+
+* **No AI Lore Invention:** AI agents must never autonomously invent major world lore, factions, historical cataclysms, cosmologies, or narrative premises.
+* **Human-Driven Lore:** All significant worldbuilding, narrative arcs, and atmospheric framing must originate from the human developer via explicit design answers or open questions.
+* **Procedural Flavour Guardrails:** Ambient procedural generation (e.g. random relic names or terrain flavour) may only be introduced if explicitly specified and approved in a formal EGM design document.
