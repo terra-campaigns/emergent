@@ -1,28 +1,28 @@
 import {
-  createDefaultWorld,
-  GameAction,
-  GameEvent,
-  SimulationResult,
-  step,
-  WorldState,
+  createDefaultHexWorld,
+  HexGameAction,
+  HexGameEvent,
+  HexSimulationResult,
+  hexStep,
+  HexWorldState,
 } from '@emergent/engine';
 
-export type SimulationListener = (state: WorldState, events: readonly GameEvent[]) => void;
+export type SimulationListener = (state: HexWorldState, events: readonly HexGameEvent[]) => void;
 
 /**
- * Local state synchronisation stream.
+ * Local state synchronisation stream for the hexagonal simulation engine.
  * Encapsulates the headless simulation engine and notifies listeners
  * on each state transition.
  */
 export class LocalSimulationStream {
-  private state: WorldState;
+  private state: HexWorldState;
   private listeners: SimulationListener[] = [];
 
   constructor() {
-    this.state = createDefaultWorld();
+    this.state = createDefaultHexWorld();
   }
 
-  public getState(): WorldState {
+  public getState(): HexWorldState {
     return this.state;
   }
 
@@ -35,14 +35,14 @@ export class LocalSimulationStream {
     };
   }
 
-  public dispatch(action: GameAction): SimulationResult {
-    const result = step(this.state, action);
+  public dispatch(action: HexGameAction): HexSimulationResult {
+    const result = hexStep(this.state, action);
     this.state = result.state;
     this.notify(result.events);
     return result;
   }
 
-  private notify(events: readonly GameEvent[]): void {
+  private notify(events: readonly HexGameEvent[]): void {
     for (const listener of this.listeners) {
       listener(this.state, events);
     }

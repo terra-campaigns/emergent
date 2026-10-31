@@ -9,8 +9,8 @@
 
 * **Orchestrator Model:** Gemini Flash (strictly enforced unless manually overridden)
 * **Quota Guardrails:** Cease autonomous development if rolling 5-hour limit < 20% or weekly limit < 30%
-* **Current Phase:** Phase 9 — Headless Hexagonal Simulation Core
-* **Current Active Focus:** TASK-901 `[AUTO]`: Implement hexagonal coordinate primitives, axial distance, and 6-direction adjacency math in `engine/src/hex/`
+* **Current Phase:** Phase 12 — Human Playability Sign-off (Milestone 2)
+* **Current Active Focus:** TASK-1201 `[HUMAN]`: Developer Playtest & Pacing Evaluation
 
 ---
 
@@ -20,8 +20,9 @@ This registry tracks all living documents that await developer decisions, narrat
 
 | Document | Task ID | Focus / Required Input | State |
 | :--- | :--- | :--- | :--- |
+| [[docs/playtests/002_milestone_2_playtest.md]] | `TASK-1201 [HUMAN]` | Qualitative playtest: hex traversal, 8-hour watches, search mechanics & M3 priorities | **Active Canvas (Awaiting Playtest)** |
 | [[docs/designs/002_hex_grid_and_time_economy.md]] | `TASK-802 [HUMAN]` | Technical design sign-off: hex coordinates, 8-hour watches, and search system | **Approved by Developer** |
-| [[docs/lore/open_questions.md]] | `TASK-303 [HUMAN]` | Location canvases: Starting vista, horizon monolith, hidden cache, night atmosphere | **Active Canvas** (Section 5 added) |
+| [[docs/lore/open_questions.md]] | `TASK-303 [HUMAN]` | Location canvases: Starting vista, monolith, cairn, barriers, night atmosphere | **Active Canvas** (Sections 5.1–5.8) |
 | [[docs/playtests/001_milestone_1_playtest.md]] | `TASK-601 [HUMAN]` | Qualitative playtest: controls, pacing, visuals, and Milestone 2 priorities | **Signed Off (Milestone 1 Complete)** |
 | [[docs/coaching/PROPOSAL_TEMPLATE.md]] | `COACH-001 [SEMI]` | Framework proposal template for developer coaching RFCs | **Available for Proposals** |
 
@@ -215,48 +216,48 @@ flowchart LR
 
 ### Phase 9: Headless Hexagonal Simulation Core
 
-- [ ] **TASK-901 `[AUTO]`: Hexagonal Math & Adjacency Primitives**
-  - *Target:* `engine/src/hex/`
+- [x] **TASK-901 `[AUTO]`: Hexagonal Math & Adjacency Primitives**
+  - *Target:* `engine/src/hex/math.ts` and `engine/src/hex/types.ts`
   - *Criteria:* Axial coordinate types, distance algorithms, neighbour offsets (`NE`, `E`, `SE`, `SW`, `W`, `NW`), and hex matrix validation.
-  - *Status:* In Progress
+  - *Status:* Completed
 
-- [ ] **TASK-902 `[AUTO]`: Diurnal Time Economy & Shift Reducer**
-  - *Target:* `engine/src/state/` and `engine/src/step.ts`
+- [x] **TASK-902 `[AUTO]`: Diurnal Time Economy & Shift Reducer**
+  - *Target:* `engine/src/hex/clock.ts` and `engine/src/hex/step.ts`
   - *Criteria:* Update pure reducer to advance 1 watch per hex traverse/search/rest, roll over watches to days, and emit diurnal cycle events.
-  - *Status:* Pending TASK-901
+  - *Status:* Completed
 
-- [ ] **TASK-903 `[AUTO]`: Hidden Discoveries & Search Mechanics**
-  - *Target:* `engine/src/state/discoveries.ts`
+- [x] **TASK-903 `[AUTO]`: Hidden Discoveries & Search Mechanics**
+  - *Target:* `engine/src/hex/defaultHexWorld.ts` and `engine/src/hex/step.ts`
   - *Criteria:* Implement `SEARCH` action revealing hidden discoveries on current hex; enforce that unrevealed relics cannot be collected via `PICKUP`.
-  - *Status:* Pending TASK-902
+  - *Status:* Completed
 
 ---
 
 ### Phase 10: Automated Verification Suite
 
-- [ ] **TASK-1001 `[AUTO]`: Deterministic Hex Simulation & Conservation Unit Tests**
+- [x] **TASK-1001 `[AUTO]`: Deterministic Hex Simulation & Conservation Unit Tests**
   - *Target:* `engine/tests/`
-  - *Criteria:* Vitest test suite asserting axial distance, boundary clamping, diurnal clock transitions, search discovery lifecycle, and multi-watch conservation fuzzing.
-  - *Status:* Pending Phase 9
+  - *Criteria:* Vitest test suite asserting axial distance, boundary clamping, diurnal clock transitions, search discovery lifecycle, and multi-watch conservation fuzzing (39 passing unit tests).
+  - *Status:* Completed
 
 ---
 
 ### Phase 11: Browser Hexagonal Presentation Client
 
-- [ ] **TASK-1101 `[AUTO]`: Hexagonal Canvas Renderer**
-  - *Target:* `client/src/render/hexRenderer.ts`
+- [x] **TASK-1101 `[AUTO]`: Hexagonal Canvas Renderer**
+  - *Target:* `client/src/render/canvasRenderer.ts`
   - *Criteria:* Regular pointy-topped hex polygon rendering, terrain colouring, coordinate overlays, and wanderer positioning.
-  - *Status:* Pending Phase 10
+  - *Status:* Completed
 
-- [ ] **TASK-1102 `[AUTO]`: Diurnal HUD & Search Controls**
-  - *Target:* `client/src/ui/` and `client/src/main.ts`
+- [x] **TASK-1102 `[AUTO]`: Diurnal HUD & Search Controls**
+  - *Target:* `client/src/ui/hud.ts`, `client/src/main.ts`, and `client/index.html`
   - *Criteria:* HUD displaying current day, watch phase (Morning/Afternoon/Night), search button/keybinding, and revealed salvage picker.
-  - *Status:* Pending TASK-1101
+  - *Status:* Completed
 
-- [ ] **TASK-1103 `[AUTO]`: Playwright Perception Suite for Hex & Time**
-  - *Target:* `client/tests/e2e/`
-  - *Criteria:* End-to-end browser perception tests asserting hex navigation, watch advancement, and searching hidden salvage.
-  - *Status:* Pending TASK-1102
+- [x] **TASK-1103 `[AUTO]`: Playwright Perception Suite for Hex & Time**
+  - *Target:* `client/tests/e2e/gameplay.spec.ts`
+  - *Criteria:* End-to-end browser perception tests asserting hex navigation, watch advancement, and searching hidden salvage (4 passing e2e tests).
+  - *Status:* Completed
 
 ---
 
@@ -265,4 +266,5 @@ flowchart LR
 - [ ] **TASK-1201 `[HUMAN]`: Developer Playtest & Pacing Evaluation**
   - *Target:* `docs/playtests/002_milestone_2_playtest.md`
   - *Criteria:* Human evaluation of hex travel pacing, search discovery excitement, day/night atmospheric rhythm, and Milestone 3 (24XX ruleset) priorities.
+  - *Status:* Active (Canvas prepared)
   - *Status:* Pending Phase 11

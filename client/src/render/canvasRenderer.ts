@@ -1,9 +1,13 @@
-import { GroundItem, TileType, WorldState } from '@emergent/engine';
+import {
+  HexTile,
+  HexTileType,
+  HexWorldState,
+} from '@emergent/engine';
 
-export class CanvasRenderer {
+export class HexCanvasRenderer {
   private ctx: CanvasRenderingContext2D;
   private canvas: HTMLCanvasElement;
-  private tileSize = 64;
+  private hexRadius = 52; // Distance from center to vertex in pixels
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -14,154 +18,151 @@ export class CanvasRenderer {
     this.ctx = context;
   }
 
-  public render(state: WorldState): void {
-    const { width, height, tiles, player, groundItems } = state;
-
-    // Adjust tile size dynamically if canvas width changes
-    this.tileSize = Math.floor(this.canvas.width / width);
+  public render(state: HexWorldState): void {
+    const { width, height } = this.canvas;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
     // 1. Clear background
-    this.ctx.fillStyle = '#0a0d12';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = '#0a0d14';
+    this.ctx.fillRect(0, 0, width, height);
 
-    // 2. Render Tiles
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const tileType = tiles[y]?.[x] as TileType;
-        this.renderTile(tileType, x, y);
-      }
+    // 2. Render all hex tiles
+    for (const tile of state.tiles) {
+      const { x, y } = this.axialToPixel(tile.coordinate.q, tile.coordinate.r, centerX, centerY);
+      this.renderHexTile(tile, x, y);
     }
 
-    // 3. Render Ground Items
-    const itemsByTile = new Map<string, GroundItem[]>();
-    for (const g of groundItems) {
-      const key = `${g.position.x},${g.position.y}`;
-      if (!itemsByTile.has(key)) {
-        itemsByTile.set(key, []);
-      }
-      itemsByTile.get(key)!.push(g);
-    }
-
-    for (const [key, items] of itemsByTile.entries()) {
-      const [x, y] = key.split(',').map(Number) as [number, number];
-      this.renderGroundItems(items, x, y);
-    }
-
-    // 4. Render Player
-    this.renderPlayer(player.position.x, player.position.y);
+    // 3. Render player wanderer on current hex
+    const playerPixel = this.axialToPixel(
+      state.player.coordinate.q,
+      state.player.coordinate.r,
+      centerX,
+      centerY
+    );
+    this.renderPlayer(playerPixel.x, playerPixel.y);
   }
 
-  private renderTile(type: TileType, x: number, y: number): void {
-    const px = x * this.tileSize;
-    const py = y * this.tileSize;
-    const sz = this.tileSize;
-
-    switch (type) {
-      case 'plains':
-        this.ctx.fillStyle = '#1c2421';
-        this.ctx.fillRect(px, py, sz, sz);
-        // Subtle grass fleck
-        this.ctx.fillStyle = '#2d3b36';
-        this.ctx.fillRect(px + 14, py + 20, 4, 8);
-        this.ctx.fillRect(px + 40, py + 36, 4, 8);
-        break;
-
-      case 'rubble':
-        this.ctx.fillStyle = '#262b33';
-        this.ctx.fillRect(px, py, sz, sz);
-        this.ctx.fillStyle = '#3c4450';
-        this.ctx.fillRect(px + 12, py + 16, 12, 10);
-        this.ctx.fillRect(px + 34, py + 28, 14, 12);
-        break;
-
-      case 'scrap_wall':
-        this.ctx.fillStyle = '#6b371b';
-        this.ctx.fillRect(px, py, sz, sz);
-        // Steel rivets and plating
-        this.ctx.strokeStyle = '#8f4e24';
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(px + 4, py + 4, sz - 8, sz - 8);
-        this.ctx.fillStyle = '#b56531';
-        this.ctx.fillRect(px + 8, py + 8, 4, 4);
-        this.ctx.fillRect(px + sz - 12, py + 8, 4, 4);
-        this.ctx.fillRect(px + 8, py + sz - 12, 4, 4);
-        this.ctx.fillRect(px + sz - 12, py + sz - 12, 4, 4);
-        break;
-
-      case 'titan_bulkhead':
-        this.ctx.fillStyle = '#161d2b';
-        this.ctx.fillRect(px, py, sz, sz);
-        this.ctx.strokeStyle = '#32405d';
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeRect(px + 2, py + 2, sz - 4, sz - 4);
-        // Cyan energy seam
-        this.ctx.fillStyle = '#387894';
-        this.ctx.fillRect(px + sz / 2 - 2, py + 4, 4, sz - 8);
-        break;
-
-      case 'waterway':
-        this.ctx.fillStyle = '#0e232e';
-        this.ctx.fillRect(px, py, sz, sz);
-        this.ctx.fillStyle = '#183c4e';
-        this.ctx.fillRect(px + 8, py + 22, 24, 4);
-        this.ctx.fillRect(px + 28, py + 42, 28, 4);
-        break;
-    }
-
-    // Grid wireframe
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeRect(px, py, sz, sz);
+  private axialToPixel(
+    q: number,
+    r: number,
+    centerX: number,
+    centerY: number
+  ): { x: number; y: number } {
+    const x = centerX + this.hexRadius * (Math.sqrt(3) * q + (Math.sqrt(3) / 2) * r);
+    const y = centerY + this.hexRadius * (1.5 * r);
+    return { x, y };
   }
 
-  private renderGroundItems(items: GroundItem[], x: number, y: number): void {
-    const px = x * this.tileSize + this.tileSize / 2;
-    const py = y * this.tileSize + this.tileSize / 2;
-
-    // Glowing relic prism
-    this.ctx.save();
-    this.ctx.fillStyle = '#56b6c2';
-    this.ctx.shadowColor = '#56b6c2';
-    this.ctx.shadowBlur = 10;
-
+  private drawHexagonPolygon(centerX: number, centerY: number, radius: number): void {
     this.ctx.beginPath();
-    this.ctx.moveTo(px, py - 12);
-    this.ctx.lineTo(px + 10, py);
-    this.ctx.lineTo(px, py + 12);
-    this.ctx.lineTo(px - 10, py);
+    for (let i = 0; i < 6; i++) {
+      // Pointy-topped angles: 30°, 90°, 150°, 210°, 270°, 330°
+      const angleDeg = 30 + i * 60;
+      const angleRad = (Math.PI / 180) * angleDeg;
+      const vx = centerX + radius * Math.cos(angleRad);
+      const vy = centerY + radius * Math.sin(angleRad);
+      if (i === 0) {
+        this.ctx.moveTo(vx, vy);
+      } else {
+        this.ctx.lineTo(vx, vy);
+      }
+    }
     this.ctx.closePath();
+  }
+
+  private renderHexTile(tile: HexTile, px: number, py: number): void {
+    const radius = this.hexRadius - 2; // Subtle 2px gap between adjacent hexes
+    this.drawHexagonPolygon(px, py, radius);
+
+    // Fill terrain
+    const colours = this.getTerrainColours(tile.terrain);
+    this.ctx.fillStyle = colours.fill;
     this.ctx.fill();
 
-    this.ctx.restore();
+    this.ctx.lineWidth = 1.5;
+    this.ctx.strokeStyle = colours.stroke;
+    this.ctx.stroke();
 
-    // Stack count badge if more than 1 item
-    if (items.length > 1) {
+    // Subtle coordinate tag at top of hex
+    this.ctx.fillStyle = '#485266';
+    this.ctx.font = '10px monospace';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillText(`${tile.coordinate.q},${tile.coordinate.r}`, px, py - radius * 0.52);
+
+    // Render discoveries on tile
+    this.renderTileDiscoveries(tile, px, py);
+  }
+
+  private renderTileDiscoveries(tile: HexTile, px: number, py: number): void {
+    const hasRevealed = tile.discoveries.some((d) => d.visibility === 'revealed');
+    const hasHidden = tile.discoveries.some((d) => d.visibility === 'hidden');
+
+    if (hasRevealed) {
+      // Glowing golden relic diamond
       this.ctx.fillStyle = '#e5c07b';
-      this.ctx.font = 'bold 11px monospace';
-      this.ctx.fillText(`×${items.length}`, px + 6, py + 16);
+      this.ctx.shadowColor = '#e5c07b';
+      this.ctx.shadowBlur = 8;
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(px, py + 12);
+      this.ctx.lineTo(px + 8, py + 20);
+      this.ctx.lineTo(px, py + 28);
+      this.ctx.lineTo(px - 8, py + 20);
+      this.ctx.closePath();
+      this.ctx.fill();
+
+      this.ctx.shadowBlur = 0; // Reset blur
+    } else if (hasHidden) {
+      // Unsearched territory indicator: subtle grey pulse dot
+      this.ctx.fillStyle = '#3a4459';
+      this.ctx.beginPath();
+      this.ctx.arc(px, py + 20, 3, 0, Math.PI * 2);
+      this.ctx.fill();
     }
   }
 
-  private renderPlayer(x: number, y: number): void {
-    const px = x * this.tileSize + this.tileSize / 2;
-    const py = y * this.tileSize + this.tileSize / 2;
+  private renderPlayer(px: number, py: number): void {
+    // 1. Soft golden aura
+    this.ctx.fillStyle = 'rgba(229, 192, 123, 0.2)';
+    this.ctx.beginPath();
+    this.ctx.arc(px, py, 18, 0, Math.PI * 2);
+    this.ctx.fill();
 
-    this.ctx.save();
-    // Golden Wanderer Motif
-    this.ctx.shadowColor = '#e5c07b';
-    this.ctx.shadowBlur = 12;
+    // 2. Inner ring
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = '#e5c07b';
+    this.ctx.beginPath();
+    this.ctx.arc(px, py, 11, 0, Math.PI * 2);
+    this.ctx.stroke();
 
+    // 3. Central wanderer glyph (tribal chevron)
     this.ctx.fillStyle = '#e5c07b';
     this.ctx.beginPath();
-    this.ctx.arc(px, py, 14, 0, Math.PI * 2);
+    this.ctx.moveTo(px, py - 6);
+    this.ctx.lineTo(px + 5, py + 4);
+    this.ctx.lineTo(px, py + 1);
+    this.ctx.lineTo(px - 5, py + 4);
+    this.ctx.closePath();
     this.ctx.fill();
+  }
 
-    // Inner compass core
-    this.ctx.fillStyle = '#161b22';
-    this.ctx.beginPath();
-    this.ctx.arc(px, py, 6, 0, Math.PI * 2);
-    this.ctx.fill();
-
-    this.ctx.restore();
+  private getTerrainColours(type: HexTileType): { fill: string; stroke: string } {
+    switch (type) {
+      case 'plains':
+        return { fill: '#16221c', stroke: '#273c32' };
+      case 'rubble':
+        return { fill: '#232630', stroke: '#363b4a' };
+      case 'scrap_wall':
+        return { fill: '#33231d', stroke: '#52382f' };
+      case 'titan_bulkhead':
+        return { fill: '#131826', stroke: '#222f47' };
+      case 'waterway':
+        return { fill: '#122633', stroke: '#1b3f54' };
+    }
   }
 }
+
+// Alias for backwards compatibility
+export { HexCanvasRenderer as CanvasRenderer };

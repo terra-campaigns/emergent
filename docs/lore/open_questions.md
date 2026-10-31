@@ -123,3 +123,30 @@ With Milestone 2 transitioning the world to an expansive hexagonal territory wit
   ```text
   [Write your notes here, e.g. Static-charged frost coating metal, distant drone hums echoing through the earth, brilliant unfamiliar constellations, etc.]
   ```
+
+### 5.6 The Surveyor Cairn & Crystal Optics (South-East Hex `0, 1`)
+
+**Prompt:** In hex `(0, 1)`, a weathered surveyor cairn conceals an iridescent optical relic (`Faceted Sensor Prism`). What past survey expedition or solitary traveller erected this marker, and what markings or script are scratched into its stones?
+* *Technical Placeholder:* `"Weathered Surveyor Cairn"`
+* **Your Thoughts:**
+  ```text
+  [Write your notes here, e.g. Stacked river stones bound with dried resin, an aluminium geodetic peg stamped with lost corporate coordinates, a prayer ribbon fluttering in the draught, etc.]
+  ```
+
+### 5.7 The Outer Perimeter Ring & The Beyond (Radius 2 Perimeter)
+
+**Prompt:** When the wanderer attempts to push past the outer hex perimeter, what physical sensation, omen, or geographical threshold turns them back?
+* *Technical Placeholder:* `"You reached the perimeter of the territory, turn back."`
+* **Your Thoughts:**
+  ```text
+  [Write your notes here, e.g. An oppressive radiation haze shimmering over salt flats, a sudden drop into an abyss filled with swirling cloud, taboo totems warning of hunter automata, etc.]
+  ```
+
+### 5.8 Regional Nomenclature & Ecological Identity
+
+**Prompt:** What name do your people or wandering scavengers give to this wider territory of scrub plains, slag fields, and titanic alloy bulkheads?
+* *Technical Placeholder:* `"The Territory"` / `"The Basin"`
+* **Your Thoughts:**
+  ```text
+  [Write your notes here, e.g. The Silt Shallows, The Ribs of the Titan, The Low Wash, The Broken Caldera, etc.]
+  ```

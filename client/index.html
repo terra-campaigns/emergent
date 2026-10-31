@@ -14,7 +14,8 @@
           <span class="subtitle">far-future humanistic sandbox simulation</span>
         </div>
         <div class="header-right">
-          <span class="badge" id="tick-badge">Tick: <strong id="hud-tick">0</strong></span>
+          <span class="badge" id="clock-badge">Time: <strong id="hud-clock">Day 1 — Morning</strong></span>
+          <span class="badge" id="tick-badge">Watch: <strong id="hud-tick">0</strong></span>
           <span class="badge" id="player-badge">Persona: <strong id="hud-persona">A tribal wanderer</strong></span>
         </div>
       </header>
@@ -25,8 +26,9 @@
             <canvas id="game-canvas" width="512" height="512" data-testid="game-canvas"></canvas>
           </div>
           <div id="controls-hint">
-            <span><strong>Movement:</strong> Arrow Keys / WASD</span>
-            <span><strong>Wait:</strong> Space / .</span>
+            <span><strong>Movement:</strong> Q (NW) · E (NE) · A (W) · D (E) · Z (SW) · C (SE) / Arrow Keys</span>
+            <span><strong>Survey:</strong> F</span>
+            <span><strong>Rest:</strong> R / Space</span>
             <span><strong>Pick Up:</strong> G / Enter</span>
             <span><strong>Drop:</strong> X</span>
           </div>
@@ -37,8 +39,8 @@
             <h2>Status & Position</h2>
             <div class="status-grid">
               <div class="stat-item">
-                <span class="stat-label">Coordinates</span>
-                <span class="stat-value" id="hud-coords">(1, 1)</span>
+                <span class="stat-label">Hex Coordinate</span>
+                <span class="stat-value" id="hud-coords">(0, 0)</span>
               </div>
               <div class="stat-item">
                 <span class="stat-label">Current Terrain</span>
@@ -55,9 +57,15 @@
           </div>
 
           <div class="panel" id="ground-panel">
-            <h2>Ground Salvage (Current Tile)</h2>
+            <div class="panel-header-row">
+              <h2>Ground Salvage (Current Hex)</h2>
+              <div class="panel-actions">
+                <button id="btn-search-hex" class="btn-action btn-header-action" title="Survey hex for hidden discoveries (1 Watch)">Survey (F)</button>
+                <button id="btn-rest" class="btn-action btn-header-action" title="Rest through the watch (1 Watch)">Rest (R)</button>
+              </div>
+            </div>
             <div id="ground-items-list" class="items-list" data-testid="ground-items">
-              <span class="empty-notice">No salvage on this tile.</span>
+              <span class="empty-notice">No salvage on this hex.</span>
             </div>
           </div>
 

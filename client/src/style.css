@@ -282,6 +282,60 @@ body {
   background: rgba(209, 154, 102, 0.1);
 }
 
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.panel-header-row h2 {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-header-action {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  background: var(--bg-tertiary);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+.btn-header-action:hover {
+  background: var(--accent-cyan);
+  color: var(--bg-primary);
+}
+
+.discovery-notice {
+  font-size: 0.8rem;
+  color: var(--accent-gold);
+  background: rgba(229, 192, 123, 0.1);
+  border: 1px dashed var(--accent-gold);
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.log-entry.searched {
+  color: var(--accent-gold);
+  background: rgba(229, 192, 123, 0.1);
+}
+
+.log-entry.dawn {
+  color: var(--accent-cyan);
+  background: rgba(86, 182, 194, 0.15);
+  font-weight: 600;
+}
+
 .log-entry.moved {
   color: var(--text-muted);
 }
