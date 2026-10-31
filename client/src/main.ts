@@ -51,10 +51,6 @@ window.addEventListener('DOMContentLoaded', () => {
       case 'ArrowRight':
       case 'd':
       case 'D':
-        // If Shift+D or just D? Let's check: D is East, or Drop?
-        // To avoid conflicting D (East) with D (Drop):
-        // Prefer Arrow keys for directional movement, or WASD when not dropping.
-        // Let's use 'e' or 'g' for pickup, and 'x' for drop if using WASD, or use arrow keys!
         stream.dispatch({ type: 'MOVE', direction: 'east' });
         handled = true;
         break;

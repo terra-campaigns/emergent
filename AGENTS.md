@@ -18,8 +18,8 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
 ## 2. Git Operations, Branch Isolation & PR Gates (Model 3)
 
 * **Branch Isolation (`agent/*`):** All autonomous feature development, specification work, and implementation commits must occur on dedicated agent branches (e.g. `agent/milestone-1-core-loop` or `agent/<feature>`). Agents must never commit directly to local `main` once remote protection is established.
-* **Autonomous Push Boundary:** Autonomous agents are authorized to run `git push` **only** to upstream agent branches (`origin/agent/*`). Pushing directly to `origin/main` is strictly prohibited.
-* **Atomic Checkpoint Commits:** Within `agent/*` branches, agents are authorized to commit atomic gates:
+* **Autonomous Push Boundary:** Autonomous agents are authorised to run `git push` **only** to upstream agent branches (`origin/agent/*`). Pushing directly to `origin/main` is strictly prohibited.
+* **Atomic Checkpoint Commits:** Within `agent/*` branches, agents are authorised to commit atomic gates:
   1. **Specification Approval Gates:** Committing approved design documents and review reports upon human sign-off.
   2. **Automated Verification Gates:** Committing clean, passing state implementations after 100% of automated unit tests pass.
   3. **Milestone Completions:** Committing major task board updates (`TASKS.md`) when a roadmap phase completes.
@@ -33,7 +33,7 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
 
 ---
 
-## 3. Language & Localization
+## 3. Language & Localisation
 
 * **British English:** All code comments, docstrings, technical documentation, commit messages, and in-game text must be written in British English (e.g. *behaviour*, *synchronise*, *colour*, *prioritise*).
 * **LLM Prompts:** Whenever an agent prompts an external LLM API to generate in-game text or dialogue, it must explicitly instruct the model to return its output in British English.
