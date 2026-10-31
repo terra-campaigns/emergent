@@ -269,9 +269,9 @@ export function hexStep(state: HexWorldState, action: HexGameAction): HexSimulat
       const item = state.player.inventory[itemIndex]!;
       const nextInventory = state.player.inventory.filter((_, idx) => idx !== itemIndex);
 
-      // Create a revealed cache discovery on the current hex
+      // Create a revealed cache discovery on the current hex with unique keying
       const dropDiscovery: HexDiscovery = Object.freeze({
-        id: `cache_drop_${item.id}_${state.clock.totalWatches}`,
+        id: `cache_drop_${item.id}_${state.clock.totalWatches}_${currentTile.discoveries.length}`,
         kind: 'cache',
         name: item.name,
         description: item.description,

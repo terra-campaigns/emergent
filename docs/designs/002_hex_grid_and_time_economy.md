@@ -78,7 +78,7 @@ export const HEX_DIRECTIONS: Record<HexDirection, HexCoordinate> = {
 } as const;
 
 /**
- * Canonical string serialization for axial coordinate keying.
+ * Canonical string serialisation for axial coordinate keying.
  */
 export const hexCoordKey = (coord: HexCoordinate): string => `${coord.q},${coord.r}`;
 
@@ -155,7 +155,7 @@ export type HexGameAction =
   | { readonly type: 'TRAVEL'; readonly direction: HexDirection }
   | { readonly type: 'SEARCH' }
   | { readonly type: 'REST' }
-  | { readonly type: 'PICKUP'; readonly itemId: string }
+  | { readonly type: 'PICKUP'; readonly itemId?: string }
   | { readonly type: 'DROP'; readonly itemId: string };
 
 export type HexGameEvent =

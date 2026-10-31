@@ -36,7 +36,7 @@ export const HEX_DIRECTIONS: Readonly<Record<HexDirection, HexCoordinate>> = {
 } as const;
 
 /**
- * Canonical string serialization for axial coordinate keying.
+ * Canonical string serialisation for axial coordinate keying.
  */
 export const hexCoordKey = (coord: HexCoordinate): string => `${coord.q},${coord.r}`;
 
