@@ -64,5 +64,13 @@ test.describe('emergent Browser Client & Perception Loop', () => {
 
     // Burden updated to 450g
     await expect(page.locator('#hud-weight')).toContainText('450g / 2000g (23%)');
+
+    // Drop item via 'x' keyboard binding
+    await page.keyboard.press('x');
+
+    // Rucksack is now empty again and item returned to ground
+    await expect(inventoryPanel).toContainText('Rucksack is empty.');
+    await expect(groundPanel).toContainText('Unmarked Battery Cell (450g)');
+    await expect(page.locator('#hud-weight')).toContainText('0g / 2000g (0%)');
   });
 });

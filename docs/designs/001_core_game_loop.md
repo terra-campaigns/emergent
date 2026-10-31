@@ -90,6 +90,7 @@ export interface GroundItem {
 
 export interface PlayerEntity {
   readonly id: string;
+  readonly title?: string; // Narrative moniker (e.g. "A tribal wanderer")
   readonly position: Position;
   readonly inventory: readonly RelicItem[];
   readonly maxCarryWeightGrams: number; // Discrete integer > 0
@@ -245,4 +246,4 @@ All verification for Milestone 1 is conducted purely through headless unit tests
 
 - [x] Zero-context Goldfish review completed ([`docs/reviews/001_core_game_loop_review.md`](file:///Users/efsa/Repos/emergent/docs/reviews/001_core_game_loop_review.md))
 - [x] Addressed 8 identified failure modes: integer weights, non-jagged matrix invariant, `PICKUP` locality, LIFO stack order, walkable relic rule, canonical tile definitions, pure reducer immutability, and British English orthography.
-- [ ] Human developer approval signed off
+- [x] Human developer approval signed off

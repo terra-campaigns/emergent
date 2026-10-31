@@ -34,7 +34,7 @@ Revisions are required before this design is safe for autonomous code generation
 | PROBE-07 | Identity / Relic Conservation | **Unenforced Relic ID Uniqueness:** No uniqueness constraint is defined for `RelicItem.id`. Duplicate IDs across `groundItems` and `player.inventory` break deterministic drop/pickup resolution and violate the Conservation of Relics invariant. | Med |
 | PROBE-08 | Verification / Scope Leak | **Premature Browser E2E Perception Requirement:** Section 7 requires Playwright headless browser tests for Milestone 1, contradicting Section 1 Non-Goals and `TASKS.md` milestone sequencing (Phase 5 presentation). | Low |
 | PROBE-09 | State Mutation / Reference Sharing | **Coordinate Reference Coupling on Drop:** Creating a `GroundItem` using `player.position` without requiring value-based copying creates object reference leakage between entities and ground items. | Low |
-| PROBE-10 | Orthography / Localization | **Orthographic Inconsistency:** The specification repeatedly uses "traversible" instead of standard British English "traversable". | Low |
+| PROBE-10 | Orthography / Localisation | **Orthographic Inconsistency:** The specification repeatedly uses "traversible" instead of standard British English "traversable". | Low |
 
 ---
 

@@ -71,19 +71,31 @@ export class HudController {
   private renderGroundList(groundItems: WorldState['groundItems']): void {
     this.groundListEl.innerHTML = '';
     if (groundItems.length === 0) {
-      this.groundListEl.innerHTML = '<span class="empty-notice">No salvage on this tile.</span>';
+      const notice = document.createElement('span');
+      notice.className = 'empty-notice';
+      notice.textContent = 'No salvage on this tile.';
+      this.groundListEl.appendChild(notice);
       return;
     }
 
     groundItems.forEach((g) => {
       const card = document.createElement('div');
       card.className = 'item-card';
-      card.innerHTML = `
-        <div class="item-info">
-          <span class="item-name">${g.item.name} (${g.item.weightGrams}g)</span>
-          <span class="item-desc">${g.item.description}</span>
-        </div>
-      `;
+
+      const info = document.createElement('div');
+      info.className = 'item-info';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'item-name';
+      nameSpan.textContent = `${g.item.name} (${g.item.weightGrams}g)`;
+
+      const descSpan = document.createElement('span');
+      descSpan.className = 'item-desc';
+      descSpan.textContent = g.item.description;
+
+      info.appendChild(nameSpan);
+      info.appendChild(descSpan);
+      card.appendChild(info);
 
       const btn = document.createElement('button');
       btn.className = 'btn-action';
@@ -98,19 +110,31 @@ export class HudController {
   private renderInventoryList(inventory: WorldState['player']['inventory']): void {
     this.inventoryListEl.innerHTML = '';
     if (inventory.length === 0) {
-      this.inventoryListEl.innerHTML = '<span class="empty-notice">Rucksack is empty.</span>';
+      const notice = document.createElement('span');
+      notice.className = 'empty-notice';
+      notice.textContent = 'Rucksack is empty.';
+      this.inventoryListEl.appendChild(notice);
       return;
     }
 
     inventory.forEach((item) => {
       const card = document.createElement('div');
       card.className = 'item-card';
-      card.innerHTML = `
-        <div class="item-info">
-          <span class="item-name">${item.name} (${item.weightGrams}g)</span>
-          <span class="item-desc">${item.description}</span>
-        </div>
-      `;
+
+      const info = document.createElement('div');
+      info.className = 'item-info';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'item-name';
+      nameSpan.textContent = `${item.name} (${item.weightGrams}g)`;
+
+      const descSpan = document.createElement('span');
+      descSpan.className = 'item-desc';
+      descSpan.textContent = item.description;
+
+      info.appendChild(nameSpan);
+      info.appendChild(descSpan);
+      card.appendChild(info);
 
       const btn = document.createElement('button');
       btn.className = 'btn-action';
