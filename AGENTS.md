@@ -24,6 +24,7 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
   2. **Automated Verification Gates:** Committing clean, passing state implementations after 100% of automated unit tests pass.
   3. **Milestone Completions:** Committing major task board updates (`TASKS.md`) when a roadmap phase completes.
 * **Human Pull Request Approval Gate:** Changes to `main` strictly require a GitHub Pull Request with at least one human approval. The agent prepares the PR and awaits human review and merge.
+* **Automated Branch Deletion on Merge:** The repository enforces automated head branch deletion upon PR merge (`delete_branch_on_merge: true`). Merged feature and agent branches (`agent/*`) are automatically deleted on GitHub once closed and merged, with local tracking branches pruned accordingly.
 * **Co-Authorship Standards:** The repository owner (`Estevao Alvarenga`) is the primary author of all work. All autonomous commits must credit the AI model as co-author using the standard Git trailer:
   ```text
   Co-authored-by: Gemini 3.8 Flash <gemini-flash@google.com>
