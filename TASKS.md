@@ -61,6 +61,11 @@ flowchart LR
   - *Criteria:* Ensure historical context is tracked or archived cleanly in `docs/context/`.
   - *Status:* Pending
 
+- [x] **TASK-005 `[AUTO]`: Author Collaborator-Player-Developer Pitch**
+  - *Target:* [`PITCH.md`](file:///Users/efsa/Repos/emergent/PITCH.md)
+  - *Criteria:* High-visibility manifesto framing the project for collaborator-player-developers, highlighting the EGM spec-driven method, deterministic simulation, lore sovereignty, and multi-faceted participation channels.
+  - *Status:* Completed
+
 ---
 
 ### Phase 1: Core Gameplay Loop Design (Elephant Phase)
