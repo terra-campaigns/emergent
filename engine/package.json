@@ -1,0 +1,17 @@
+{
+  "name": "@emergent/engine",
+  "version": "0.1.0",
+  "description": "Authoritative headless simulation core for emergent",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  }
+}

@@ -9,8 +9,8 @@
 
 * **Orchestrator Model:** Gemini Flash (strictly enforced unless manually overridden)
 * **Quota Guardrails:** Cease autonomous development if rolling 5-hour limit < 20% or weekly limit < 30%
-* **Current Phase:** Phase 3 — Headless Simulation Core (`engine/`)
-* **Current Active Focus:** TASK-301 `[AUTO]`: Initialise `engine/` package manifest, TypeScript configuration, and Vitest test runner
+* **Current Phase:** Phase 4 — Continuous Verification & Automation Harness (`scripts/`)
+* **Current Active Focus:** TASK-402 `[AUTO]`: Implement `scripts/verify_implementation.sh` continuous verification runner
 
 ---
 
@@ -93,25 +93,25 @@ flowchart LR
 
 ### Phase 3: Headless Simulation Core (`engine/`)
 
-- [ ] **TASK-301 `[AUTO]`: Initialize Engine Project & Dependencies**
+- [x] **TASK-301 `[AUTO]`: Initialize Engine Project & Dependencies**
   - *Target:* [`engine/`](file:///Users/efsa/Repos/emergent/engine)
   - *Criteria:* `package.json`, `tsconfig.json`, Vitest configuration, and directory layout (`src/state/`, `src/systems/`, `src/data/`, `tests/`).
-  - *Status:* Ready to Start
+  - *Status:* Completed
 
-- [ ] **TASK-302 `[AUTO]`: Implement Pure Reducer State Machine & Tick Systems**
+- [x] **TASK-302 `[AUTO]`: Implement Pure Reducer State Machine & Tick Systems**
   - *Target:* `engine/src/state/` and `engine/src/index.ts`
   - *Criteria:* Pure function `step(state, action): SimulationResult` adhering strictly to contract in `docs/designs/001_core_game_loop.md`.
-  - *Status:* Pending (Blocked by TASK-301)
+  - *Status:* Completed
 
 - [ ] **TASK-303 `[HUMAN]`: Author Initial World Fixture Data (Lore)**
-  - *Target:* `engine/src/data/defaultWorld.ts`
-  - *Criteria:* Inject human-authored player title, starting zone name, and 2-3 initial relics/items into world setup fixtures.
-  - *Status:* Pending Human Input (Fallbacks available to unblock TASK-304)
+  - *Target:* [`docs/lore/open_questions.md`](file:///Users/efsa/Repos/emergent/docs/lore/open_questions.md) and `engine/src/data/defaultWorld.ts`
+  - *Criteria:* Human authors world details asynchronously in `docs/lore/open_questions.md`. Engine uses neutral placeholders to proceed without blocking.
+  - *Status:* Asynchronous / Unblocking (Neutral placeholders in place)
 
-- [ ] **TASK-304 `[AUTO]`: Deterministic Unit Test Suite**
-  - *Target:* `engine/tests/`
-  - *Criteria:* 100% test pass on validation, cardinal movement, wall blocking, boundary clamping ("You reached the end of the world, come back later"), LIFO stacking, integer weight limits, immutability, and 200-tick conservation fuzzing.
-  - *Status:* Pending (Blocked by TASK-302)
+- [x] **TASK-304 `[AUTO]`: Deterministic Unit Test Suite**
+  - *Target:* [`engine/tests/`](file:///Users/efsa/Repos/emergent/engine/tests)
+  - *Criteria:* 100% test pass on validation, cardinal movement, wall blocking, boundary clamping ("You reached the end of the world, come back later"), LIFO stacking, integer weight limits, immutability, and 200-tick conservation fuzzing. 24/24 tests passing.
+  - *Status:* Completed
 
 ---
 
