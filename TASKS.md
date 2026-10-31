@@ -9,8 +9,8 @@
 
 * **Orchestrator Model:** Gemini Flash (strictly enforced unless manually overridden)
 * **Quota Guardrails:** Cease autonomous development if rolling 5-hour limit < 20% or weekly limit < 30%
-* **Current Phase:** Phase 6 — Human Playability Sign-off
-* **Current Active Focus:** TASK-601 `[HUMAN]`: Human playtest of Milestone 1 in browser, evaluating game feel, pacing, and atmosphere
+* **Current Phase:** Phase 9 — Headless Hexagonal Simulation Core
+* **Current Active Focus:** TASK-901 `[AUTO]`: Implement hexagonal coordinate primitives, axial distance, and 6-direction adjacency math in `engine/src/hex/`
 
 ---
 
@@ -20,8 +20,10 @@ This registry tracks all living documents that await developer decisions, narrat
 
 | Document | Task ID | Focus / Required Input | State |
 | :--- | :--- | :--- | :--- |
-| [[docs/playtests/001_milestone_1_playtest.md]] | `TASK-601 [HUMAN]` | Qualitative playtest: controls, pacing, visuals, and Milestone 2 priorities | **Active Focus** |
-| [[docs/lore/open_questions.md]] | `TASK-303 [HUMAN]` | World lore: starting region identity, 2–3 relics, and terrain dialect | **Partially Answered** (*"A tribal wanderer"*) |
+| [[docs/designs/002_hex_grid_and_time_economy.md]] | `TASK-802 [HUMAN]` | Technical design sign-off: hex coordinates, 8-hour watches, and search system | **Approved by Developer** |
+| [[docs/lore/open_questions.md]] | `TASK-303 [HUMAN]` | Location canvases: Starting vista, horizon monolith, hidden cache, night atmosphere | **Active Canvas** (Section 5 added) |
+| [[docs/playtests/001_milestone_1_playtest.md]] | `TASK-601 [HUMAN]` | Qualitative playtest: controls, pacing, visuals, and Milestone 2 priorities | **Signed Off (Milestone 1 Complete)** |
+| [[docs/coaching/PROPOSAL_TEMPLATE.md]] | `COACH-001 [SEMI]` | Framework proposal template for developer coaching RFCs | **Available for Proposals** |
 
 ---
 
@@ -38,12 +40,22 @@ Every item on the task board is tagged with one of three execution modes:
 
 ```mermaid
 flowchart LR
-    P0["Phase 0: Scaffolding & Templates"] --> P1["Phase 1: Spec Formulation (Elephant)"]
-    P1 --> P2["Phase 2: Spec Review (Goldfish)"]
-    P2 --> P3["Phase 3: Headless Simulation Core"]
-    P3 --> P4["Phase 4: Automated Verification"]
-    P4 --> P5["Phase 5: Browser Presentation"]
-    P5 --> P6["Phase 6: Human Playability Sign-off"]
+    subgraph M1["Milestone 1: 2D Orthogonal Core (Complete)"]
+        P0["Phase 0: Scaffolding"] --> P1["Phase 1: Spec"]
+        P1 --> P2["Phase 2: Review"]
+        P2 --> P3["Phase 3: Engine"]
+        P3 --> P4["Phase 4: Tests"]
+        P4 --> P5["Phase 5: Client"]
+        P5 --> P6["Phase 6: Sign-off"]
+    end
+    subgraph M2["Milestone 2: Hex Grid & Time Economy (Active)"]
+        P6 --> P7["Phase 7: Hex Spec"]
+        P7 --> P8["Phase 8: Review"]
+        P8 --> P9["Phase 9: Hex Engine"]
+        P9 --> P10["Phase 10: Tests"]
+        P10 --> P11["Phase 11: Hex Client"]
+        P11 --> P12["Phase 12: Playtest"]
+    end
 ```
 
 ---
@@ -171,7 +183,86 @@ flowchart LR
 
 ### Phase 6: Human Playability Sign-off
 
-- [ ] **TASK-601 `[HUMAN]`: Developer Playtest & Qualitative Feel Review**
+- [x] **TASK-601 `[HUMAN]`: Developer Playtest & Qualitative Feel Review**
   - *Target:* [[docs/playtests/001_milestone_1_playtest.md]]
   - *Criteria:* Human evaluation of pacing, responsiveness, atmosphere, and game feel before iterating to the next milestone.
-  - *Status:* In Progress (Playtest canvas ready)
+  - *Status:* Completed (Directives: Hexagonal grid, 1/3-day travel shifts, hidden discoveries & search system).
+
+---
+
+### Phase 7: Milestone 2 Hex Grid & Time Economy Specification (Elephant Phase)
+
+- [x] **TASK-701 `[AUTO]`: Draft Hex Grid, Time Economy & Discovery Specification**
+  - *Target:* `docs/designs/002_hex_grid_and_time_economy.md`
+  - *Criteria:* Strict no-code EGM spec defining axial coordinate math `(q, r)`, 6 hex adjacencies, diurnal time economy (3 watches/day: morning/afternoon/night), discovery visibility states (`hidden`/`revealed`), and the `SEARCH` action contract.
+  - *Status:* Completed
+
+---
+
+### Phase 8: Goldfish Stress-Test & Spec Formalisation
+
+- [x] **TASK-801 `[AUTO]`: Zero-Context Goldfish Review**
+  - *Target:* `docs/reviews/002_hex_grid_and_time_economy_review.md`
+  - *Criteria:* Independent adversarial review probing coordinate discontinuity, time desynchronisation, search spam vulnerabilities, and boundary invariants.
+  - *Status:* Completed (Approved with coordinate keying hardening)
+
+- [x] **TASK-802 `[HUMAN]`: Human Developer Design Approval Gate**
+  - *Target:* `docs/designs/002_hex_grid_and_time_economy.md`
+  - *Criteria:* Review and formal approval of the Milestone 2 design contract by the human developer.
+  - *Status:* Completed (Approved by developer with location canvas directive)
+
+---
+
+### Phase 9: Headless Hexagonal Simulation Core
+
+- [ ] **TASK-901 `[AUTO]`: Hexagonal Math & Adjacency Primitives**
+  - *Target:* `engine/src/hex/`
+  - *Criteria:* Axial coordinate types, distance algorithms, neighbour offsets (`NE`, `E`, `SE`, `SW`, `W`, `NW`), and hex matrix validation.
+  - *Status:* In Progress
+
+- [ ] **TASK-902 `[AUTO]`: Diurnal Time Economy & Shift Reducer**
+  - *Target:* `engine/src/state/` and `engine/src/step.ts`
+  - *Criteria:* Update pure reducer to advance 1 watch per hex traverse/search/rest, roll over watches to days, and emit diurnal cycle events.
+  - *Status:* Pending TASK-901
+
+- [ ] **TASK-903 `[AUTO]`: Hidden Discoveries & Search Mechanics**
+  - *Target:* `engine/src/state/discoveries.ts`
+  - *Criteria:* Implement `SEARCH` action revealing hidden discoveries on current hex; enforce that unrevealed relics cannot be collected via `PICKUP`.
+  - *Status:* Pending TASK-902
+
+---
+
+### Phase 10: Automated Verification Suite
+
+- [ ] **TASK-1001 `[AUTO]`: Deterministic Hex Simulation & Conservation Unit Tests**
+  - *Target:* `engine/tests/`
+  - *Criteria:* Vitest test suite asserting axial distance, boundary clamping, diurnal clock transitions, search discovery lifecycle, and multi-watch conservation fuzzing.
+  - *Status:* Pending Phase 9
+
+---
+
+### Phase 11: Browser Hexagonal Presentation Client
+
+- [ ] **TASK-1101 `[AUTO]`: Hexagonal Canvas Renderer**
+  - *Target:* `client/src/render/hexRenderer.ts`
+  - *Criteria:* Regular pointy-topped hex polygon rendering, terrain colouring, coordinate overlays, and wanderer positioning.
+  - *Status:* Pending Phase 10
+
+- [ ] **TASK-1102 `[AUTO]`: Diurnal HUD & Search Controls**
+  - *Target:* `client/src/ui/` and `client/src/main.ts`
+  - *Criteria:* HUD displaying current day, watch phase (Morning/Afternoon/Night), search button/keybinding, and revealed salvage picker.
+  - *Status:* Pending TASK-1101
+
+- [ ] **TASK-1103 `[AUTO]`: Playwright Perception Suite for Hex & Time**
+  - *Target:* `client/tests/e2e/`
+  - *Criteria:* End-to-end browser perception tests asserting hex navigation, watch advancement, and searching hidden salvage.
+  - *Status:* Pending TASK-1102
+
+---
+
+### Phase 12: Human Playability Sign-off (Milestone 2)
+
+- [ ] **TASK-1201 `[HUMAN]`: Developer Playtest & Pacing Evaluation**
+  - *Target:* `docs/playtests/002_milestone_2_playtest.md`
+  - *Criteria:* Human evaluation of hex travel pacing, search discovery excitement, day/night atmospheric rhythm, and Milestone 3 (24XX ruleset) priorities.
+  - *Status:* Pending Phase 11
