@@ -2,6 +2,10 @@
   "name": "@emergent/client",
   "version": "0.1.0",
   "description": "Browser presentation layer for emergent",
+  "author": "Estevao Alvarenga <estevao.alvarenga@shell.com>",
+  "contributors": [
+    "Gemini 3.8 Flash <gemini-flash@google.com>"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",

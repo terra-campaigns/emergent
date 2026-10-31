@@ -24,6 +24,10 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
   2. **Automated Verification Gates:** Committing clean, passing state implementations after 100% of automated unit tests pass.
   3. **Milestone Completions:** Committing major task board updates (`TASKS.md`) when a roadmap phase completes.
 * **Human Pull Request Approval Gate:** Changes to `main` strictly require a GitHub Pull Request with at least one human approval. The agent prepares the PR and awaits human review and merge.
+* **Co-Authorship Standards:** The repository owner (`Estevao Alvarenga`) is the primary author of all work. All autonomous commits must credit the AI model as co-author using the standard Git trailer:
+  ```text
+  Co-authored-by: Gemini 3.8 Flash <gemini-flash@google.com>
+  ```
 * **Prohibition on Speculative Commits:** The agent must never commit or push intermediate, broken, failing, or unreviewed work-in-progress code.
 * **Conventional Commits:** All commit messages and PR titles must follow Conventional Commits in British English.
 

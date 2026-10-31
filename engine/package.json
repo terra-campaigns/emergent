@@ -2,6 +2,10 @@
   "name": "@emergent/engine",
   "version": "0.1.0",
   "description": "Authoritative headless simulation core for emergent",
+  "author": "Estevao Alvarenga <estevao.alvarenga@shell.com>",
+  "contributors": [
+    "Gemini 3.8 Flash <gemini-flash@google.com>"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
