@@ -5,6 +5,7 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
+.obsidian/
 
 # Node / Web Client
 node_modules/
@@ -12,6 +13,8 @@ dist/
 build/
 .next/
 coverage/
+test-results/
+playwright-report/
 
 # Rust / Engine
 target/

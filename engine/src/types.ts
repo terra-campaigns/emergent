@@ -49,6 +49,7 @@ export interface GroundItem {
 
 export interface PlayerEntity {
   readonly id: string;
+  readonly title?: string;
   readonly position: Position;
   readonly inventory: readonly RelicItem[];
   readonly maxCarryWeightGrams: number;

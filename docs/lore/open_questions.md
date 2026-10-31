@@ -7,8 +7,8 @@
 
 ## Status
 
-* **Current Baseline:** Using neutral technical placeholders in `engine/src/data/defaultWorld.ts`.
-* **Last Synchronised by Agent:** 31 October 2026 (Initial stubs created).
+* **Current Baseline:** Player entity updated to "A tribal wanderer".
+* **Last Synchronised by Agent:** 31 October 2026 (Synchronised Player Persona: "A tribal wanderer").
 
 ---
 
@@ -19,7 +19,7 @@
 * **Default Placeholder:** `title: "Traveller"`, `id: "player_001"`
 * **Your Answer:**
   ```text
-  [Write your answer here, e.g. "Alden the Scavenger", "A wandering Novice of the Iron Fold", etc.]
+  A tribal wanderer.
   ```
 
 ---
