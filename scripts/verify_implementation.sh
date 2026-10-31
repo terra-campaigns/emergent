@@ -118,7 +118,7 @@ if [ -d "$REPO_ROOT/client" ]; then
   fi
 
   if npx playwright test > /dev/null 2>&1; then
-    pass "Headless browser Playwright perception tests passed (3 tests)."
+    pass "Headless browser Playwright perception tests passed."
   else
     fail "Headless browser Playwright perception tests failed."
     npx playwright test || true

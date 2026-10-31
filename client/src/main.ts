@@ -14,6 +14,12 @@ window.addEventListener('DOMContentLoaded', () => {
     onDrop: (itemId) => {
       stream.dispatch({ type: 'DROP', itemId });
     },
+    onSearch: () => {
+      stream.dispatch({ type: 'SEARCH' });
+    },
+    onRest: () => {
+      stream.dispatch({ type: 'REST' });
+    },
   });
 
   // Subscribe renderer and HUD to the simulation state stream
@@ -27,40 +33,67 @@ window.addEventListener('DOMContentLoaded', () => {
     let handled = false;
 
     switch (e.key) {
-      case 'ArrowUp':
+      // Hexagonal movement
+      case 'q':
+      case 'Q':
       case 'w':
       case 'W':
-        stream.dispatch({ type: 'MOVE', direction: 'north' });
+      case 'ArrowUp':
+        stream.dispatch({ type: 'TRAVEL', direction: 'NW' });
         handled = true;
         break;
 
-      case 'ArrowDown':
-      case 's':
-      case 'S':
-        stream.dispatch({ type: 'MOVE', direction: 'south' });
+      case 'e':
+      case 'E':
+        stream.dispatch({ type: 'TRAVEL', direction: 'NE' });
         handled = true;
         break;
 
-      case 'ArrowLeft':
       case 'a':
       case 'A':
-        stream.dispatch({ type: 'MOVE', direction: 'west' });
+      case 'ArrowLeft':
+        stream.dispatch({ type: 'TRAVEL', direction: 'W' });
         handled = true;
         break;
 
-      case 'ArrowRight':
       case 'd':
       case 'D':
-        stream.dispatch({ type: 'MOVE', direction: 'east' });
+      case 'ArrowRight':
+        stream.dispatch({ type: 'TRAVEL', direction: 'E' });
         handled = true;
         break;
 
+      case 'z':
+      case 'Z':
+        stream.dispatch({ type: 'TRAVEL', direction: 'SW' });
+        handled = true;
+        break;
+
+      case 'c':
+      case 'C':
+      case 's':
+      case 'S':
+      case 'ArrowDown':
+        stream.dispatch({ type: 'TRAVEL', direction: 'SE' });
+        handled = true;
+        break;
+
+      // Survey / Search hex
+      case 'f':
+      case 'F':
+        stream.dispatch({ type: 'SEARCH' });
+        handled = true;
+        break;
+
+      // Diurnal Rest
+      case 'r':
+      case 'R':
       case ' ':
-      case '.':
-        stream.dispatch({ type: 'WAIT' });
+        stream.dispatch({ type: 'REST' });
         handled = true;
         break;
 
+      // Tactical Pick Up
       case 'g':
       case 'G':
       case 'Enter':
@@ -68,6 +101,7 @@ window.addEventListener('DOMContentLoaded', () => {
         handled = true;
         break;
 
+      // Tactical Drop
       case 'x':
       case 'X': {
         const state = stream.getState();
