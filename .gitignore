@@ -5,6 +5,7 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
+.obsidian/
 
 # Node / Web Client
 node_modules/
