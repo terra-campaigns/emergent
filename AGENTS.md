@@ -59,3 +59,21 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
 * **No AI Lore Invention:** AI agents must never autonomously invent major world lore, factions, historical cataclysms, cosmologies, or narrative premises.
 * **Human-Driven Lore:** All significant worldbuilding, narrative arcs, and atmospheric framing must originate from the human developer via explicit design answers or open questions.
 * **Procedural Flavour Guardrails:** Ambient procedural generation (e.g. random relic names or terrain flavour) may only be introduced if explicitly specified and approved in a formal EGM design document.
+
+---
+
+## 8. Asynchronous Deferral & The Human Input Registry
+
+When an implementation requires human decisions, narrative lore, or qualitative evaluation:
+* **Never Block Autonomous Flow:** The agent must not halt technical progress waiting for human creative input. It must inject neutral technical placeholders (e.g. `"Traveller"`, `"Relic Alpha"`) and proceed with headless logic and automated tests.
+* **Dedicated Input Canvases:** All open human questions must be written into dedicated living documents (e.g. `docs/lore/open_questions.md`, `docs/playtests/*.md`).
+* **Centralised Registry in `TASKS.md`:** The agent must maintain a `## Human Input Registry` table at the very top of `TASKS.md`, listing every active document requiring human input, its task ID, and its status.
+
+---
+
+## 9. Task Board Autonomy Classification (Guido Framework)
+
+All items added to task boards (`TASKS.md`) must be tagged with one of three execution modes:
+* **`[AUTO]` (Autonomous):** Executed entirely by the AI agent without requiring interactive human pauses (e.g. scaffolding manifests, writing pure reducers, running unit test suites).
+* **`[SEMI]` (Semi-Autonomous):** Drafted or staged by the AI agent, but requiring developer review, parameter confirmation, or boundary validation before proceeding.
+* **`[HUMAN]` (Human-Driven):** Exclusively reserved for human authority (e.g. narrative lore authorship, qualitative playability evaluation, architectural contract approvals, and git commit authorisations).
