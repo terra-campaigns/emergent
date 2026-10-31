@@ -15,15 +15,17 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
 
 ---
 
-## 2. Git Operations & Atomic Checkpoint Commits
+## 2. Git Operations, Branch Isolation & PR Gates (Model 3)
 
-* **Atomic Checkpoint Commits Permitted:** Within this repository (`emergent`) only, the autonomous agent is authorized by the developer to execute `git commit` strictly for documenting verified atomic checkpoint gates:
+* **Branch Isolation (`agent/*`):** All autonomous feature development, specification work, and implementation commits must occur on dedicated agent branches (e.g. `agent/milestone-1-core-loop` or `agent/<feature>`). Agents must never commit directly to local `main` once remote protection is established.
+* **Autonomous Push Boundary:** Autonomous agents are authorized to run `git push` **only** to upstream agent branches (`origin/agent/*`). Pushing directly to `origin/main` is strictly prohibited.
+* **Atomic Checkpoint Commits:** Within `agent/*` branches, agents are authorized to commit atomic gates:
   1. **Specification Approval Gates:** Committing approved design documents and review reports upon human sign-off.
   2. **Automated Verification Gates:** Committing clean, passing state implementations after 100% of automated unit tests pass.
   3. **Milestone Completions:** Committing major task board updates (`TASKS.md`) when a roadmap phase completes.
-* **Prohibition on Speculative Commits:** The agent must never run `git commit` for intermediate, broken, failing, or unreviewed work-in-progress code.
-* **Conventional Commits:** All commit messages must follow the Conventional Commits format in British English (e.g. `docs: approve milestone 1 core gameplay loop specification`, `feat(engine): implement pure reducer tick loop`).
-* **Clean Working Tree:** Staged changes must strictly include only the files relevant to that specific atomic gate.
+* **Human Pull Request Approval Gate:** Changes to `main` strictly require a GitHub Pull Request with at least one human approval. The agent prepares the PR and awaits human review and merge.
+* **Prohibition on Speculative Commits:** The agent must never commit or push intermediate, broken, failing, or unreviewed work-in-progress code.
+* **Conventional Commits:** All commit messages and PR titles must follow Conventional Commits in British English.
 
 ---
 
