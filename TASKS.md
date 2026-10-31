@@ -20,8 +20,8 @@ This registry tracks all living documents that await developer decisions, narrat
 
 | Document | Task ID | Focus / Required Input | State |
 | :--- | :--- | :--- | :--- |
-| [`docs/playtests/001_milestone_1_playtest.md`](file:///Users/efsa/Repos/emergent/docs/playtests/001_milestone_1_playtest.md) | `TASK-601 [HUMAN]` | Qualitative playtest: controls, pacing, visuals, and Milestone 2 priorities | **Active Focus** |
-| [`docs/lore/open_questions.md`](file:///Users/efsa/Repos/emergent/docs/lore/open_questions.md) | `TASK-303 [HUMAN]` | World lore: starting region identity, 2–3 relics, and terrain dialect | **Partially Answered** (*"A tribal wanderer"*) |
+| [[docs/playtests/001_milestone_1_playtest.md]] | `TASK-601 [HUMAN]` | Qualitative playtest: controls, pacing, visuals, and Milestone 2 priorities | **Active Focus** |
+| [[docs/lore/open_questions.md]] | `TASK-303 [HUMAN]` | World lore: starting region identity, 2–3 relics, and terrain dialect | **Partially Answered** (*"A tribal wanderer"*) |
 
 ---
 
@@ -125,8 +125,8 @@ flowchart LR
   - *Status:* Completed
 
 - [ ] **TASK-303 `[HUMAN]`: Author Initial World Fixture Data (Lore)**
-  - *Target:* [`docs/lore/open_questions.md`](file:///Users/efsa/Repos/emergent/docs/lore/open_questions.md) and `engine/src/data/defaultWorld.ts`
-  - *Criteria:* Human authors world details asynchronously in `docs/lore/open_questions.md`. Engine uses neutral placeholders to proceed without blocking.
+  - *Target:* [[docs/lore/open_questions.md]] and `engine/src/data/defaultWorld.ts`
+  - *Criteria:* Human authors world details asynchronously in [[docs/lore/open_questions.md]]. Engine uses neutral placeholders to proceed without blocking.
   - *Status:* Asynchronous / Unblocking (Neutral placeholders in place)
 
 - [x] **TASK-304 `[AUTO]`: Deterministic Unit Test Suite**
@@ -172,6 +172,6 @@ flowchart LR
 ### Phase 6: Human Playability Sign-off
 
 - [ ] **TASK-601 `[HUMAN]`: Developer Playtest & Qualitative Feel Review**
-  - *Target:* [`docs/playtests/001_milestone_1_playtest.md`](file:///Users/efsa/Repos/emergent/docs/playtests/001_milestone_1_playtest.md)
+  - *Target:* [[docs/playtests/001_milestone_1_playtest.md]]
   - *Criteria:* Human evaluation of pacing, responsiveness, atmosphere, and game feel before iterating to the next milestone.
   - *Status:* In Progress (Playtest canvas ready)
