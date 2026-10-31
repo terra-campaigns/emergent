@@ -1,0 +1,20 @@
+{
+  "name": "@emergent/client",
+  "version": "0.1.0",
+  "description": "Browser presentation layer for emergent",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@emergent/engine": "file:../engine"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.1",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0"
+  }
+}

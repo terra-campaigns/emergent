@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>emergent — Far-Future Humanistic Sandbox RPG</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header id="game-header">
+        <div class="header-left">
+          <h1 class="logo">emergent</h1>
+          <span class="subtitle">far-future humanistic sandbox simulation</span>
+        </div>
+        <div class="header-right">
+          <span class="badge" id="tick-badge">Tick: <strong id="hud-tick">0</strong></span>
+          <span class="badge" id="player-badge">Persona: <strong id="hud-persona">A tribal wanderer</strong></span>
+        </div>
+      </header>
+
+      <main id="game-container">
+        <section id="viewport-section">
+          <div class="canvas-wrapper">
+            <canvas id="game-canvas" width="512" height="512" data-testid="game-canvas"></canvas>
+          </div>
+          <div id="controls-hint">
+            <span><strong>Movement:</strong> Arrow Keys / WASD</span>
+            <span><strong>Wait:</strong> Space / .</span>
+            <span><strong>Pick Up:</strong> G / Enter</span>
+            <span><strong>Drop:</strong> D</span>
+          </div>
+        </section>
+
+        <aside id="sidebar-section">
+          <div class="panel" id="status-panel">
+            <h2>Status & Position</h2>
+            <div class="status-grid">
+              <div class="stat-item">
+                <span class="stat-label">Coordinates</span>
+                <span class="stat-value" id="hud-coords">(1, 1)</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Current Terrain</span>
+                <span class="stat-value" id="hud-terrain">Plains</span>
+              </div>
+              <div class="stat-item full-width">
+                <span class="stat-label">Burden (Capacity)</span>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="weight-progress"></div>
+                </div>
+                <span class="stat-subtext" id="hud-weight">0g / 2000g</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="ground-panel">
+            <h2>Ground Salvage (Current Tile)</h2>
+            <div id="ground-items-list" class="items-list" data-testid="ground-items">
+              <span class="empty-notice">No salvage on this tile.</span>
+            </div>
+          </div>
+
+          <div class="panel" id="inventory-panel">
+            <h2>Canvas Rucksack</h2>
+            <div id="inventory-items-list" class="items-list" data-testid="inventory-items">
+              <span class="empty-notice">Rucksack is empty.</span>
+            </div>
+          </div>
+
+          <div class="panel" id="log-panel">
+            <h2>Chronicle</h2>
+            <div id="event-log" class="log-stream" data-testid="event-log"></div>
+          </div>
+        </aside>
+      </main>
+    </div>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

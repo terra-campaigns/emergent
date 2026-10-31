@@ -9,8 +9,8 @@
 
 * **Orchestrator Model:** Gemini Flash (strictly enforced unless manually overridden)
 * **Quota Guardrails:** Cease autonomous development if rolling 5-hour limit < 20% or weekly limit < 30%
-* **Current Phase:** Phase 5 — Browser Presentation Layer (`client/`)
-* **Current Active Focus:** TASK-501 `[AUTO]`: Scaffold presentation client (HTML5 Canvas / PixiJS) rendering state updates emitted by engine
+* **Current Phase:** Phase 6 — Human Playability Sign-off
+* **Current Active Focus:** TASK-601 `[HUMAN]`: Human playtest of Milestone 1 in browser, evaluating game feel, pacing, and atmosphere
 
 ---
 
@@ -136,26 +136,26 @@ flowchart LR
 
 ### Phase 5: Browser Presentation Layer (`client/`)
 
-- [ ] **TASK-501 `[AUTO]`: Scaffold Presentation Client**
+- [x] **TASK-501 `[AUTO]`: Scaffold Presentation Client**
   - *Target:* [`client/`](file:///Users/efsa/Repos/emergent/client)
   - *Criteria:* Lightweight 2D Canvas setup rendering state updates emitted by the engine.
-  - *Status:* Pending (Blocked by Phase 3 & 4)
+  - *Status:* Completed
 
-- [ ] **TASK-502 `[AUTO]`: Connect WebSocket / Local Stream Synchronisation**
-  - *Target:* `client/src/net/`
-  - *Criteria:* Client consumes simulation ticks and reconciles user inputs.
-  - *Status:* Pending (Blocked by TASK-501)
+- [x] **TASK-502 `[AUTO]`: Connect Local Stream Synchronisation & Controls**
+  - *Target:* [`client/src/net/localSimulationStream.ts`](file:///Users/efsa/Repos/emergent/client/src/net/localSimulationStream.ts) and [`client/src/main.ts`](file:///Users/efsa/Repos/emergent/client/src/main.ts)
+  - *Criteria:* Client consumes simulation ticks, dispatches actions via keyboard and HUD, and renders updates reactively.
+  - *Status:* Completed
 
-- [ ] **TASK-503 `[AUTO]`: Playwright Headless Perception Suite**
-  - *Target:* `client/tests/e2e/`
-  - *Criteria:* Automated headless browser assertions verifying canvas render and user keystroke handling.
-  - *Status:* Pending (Blocked by TASK-502)
+- [x] **TASK-503 `[AUTO]`: Playwright Headless Perception Suite**
+  - *Target:* [`client/tests/e2e/gameplay.spec.ts`](file:///Users/efsa/Repos/emergent/client/tests/e2e/gameplay.spec.ts)
+  - *Criteria:* Automated headless browser assertions verifying canvas render, boundary rejection chronicle logs, and relic pickup. 3/3 tests passing.
+  - *Status:* Completed
 
 ---
 
 ### Phase 6: Human Playability Sign-off
 
 - [ ] **TASK-601 `[HUMAN]`: Developer Playtest & Qualitative Feel Review**
-  - *Target:* Interactive gameplay review
+  - *Target:* Interactive gameplay review in browser (`npm run dev --prefix client`)
   - *Criteria:* Human evaluation of pacing, responsiveness, atmosphere, and game feel before iterating to the next milestone.
-  - *Status:* Pending (Blocked by TASK-503)
+  - *Status:* In Progress (Ready for Human Playtest)

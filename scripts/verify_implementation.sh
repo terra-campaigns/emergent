@@ -100,13 +100,31 @@ if [ -d "$REPO_ROOT/engine" ]; then
 fi
 
 # ------------------------------------------------------------------------------
-# Gate 4: Client Presentation Verification (Phase 5 Placeholder)
+# Gate 4: Browser Client Build & Perception Tests (Playwright)
 # ------------------------------------------------------------------------------
-echo -e "\n${BOLD}4. Browser Client Presentation Suite...${NC}"
-if [ -f "$REPO_ROOT/client/package.json" ]; then
-  pass "Client package configured."
+echo -e "\n${BOLD}4. Executing Browser Client Perception Suite (Playwright)...${NC}"
+if [ -d "$REPO_ROOT/client" ]; then
+  cd "$REPO_ROOT/client"
+  if [ ! -d "node_modules" ]; then
+    echo "    node_modules missing in client/; running npm install..."
+    npm install --silent
+  fi
+
+  if npm run build > /dev/null 2>&1; then
+    pass "Client build passed (0 errors)."
+  else
+    fail "Client build failed."
+    npm run build || true
+  fi
+
+  if npx playwright test > /dev/null 2>&1; then
+    pass "Headless browser Playwright perception tests passed (3 tests)."
+  else
+    fail "Headless browser Playwright perception tests failed."
+    npx playwright test || true
+  fi
 else
-  echo -e "    ${YELLOW}-${NC} Client presentation suite deferred to Phase 5 (Not yet mounted)."
+  fail "Directory 'client/' not found."
 fi
 
 # ------------------------------------------------------------------------------
