@@ -9,8 +9,8 @@
 
 * **Orchestrator Model:** Gemini Flash (strictly enforced unless manually overridden)
 * **Quota Guardrails:** Cease autonomous development if rolling 5-hour limit < 20% or weekly limit < 30%
-* **Current Phase:** Phase 4 — Continuous Verification & Automation Harness (`scripts/`)
-* **Current Active Focus:** TASK-402 `[AUTO]`: Implement `scripts/verify_implementation.sh` continuous verification runner
+* **Current Phase:** Phase 5 — Browser Presentation Layer (`client/`)
+* **Current Active Focus:** TASK-501 `[AUTO]`: Scaffold presentation client (HTML5 Canvas / PixiJS) rendering state updates emitted by engine
 
 ---
 
@@ -122,15 +122,15 @@ flowchart LR
 
 ### Phase 4: Continuous Verification & Perception Harness (`scripts/`)
 
-- [ ] **TASK-401 `[AUTO]`: Implement EGM Automation Harness**
-  - *Target:* [`scripts/run_egm_cycle.sh`](file:///Users/efsa/Repos/emergent/scripts)
-  - *Criteria:* Script to launch spec drafting and goldfish reviews.
-  - *Status:* Pending
+- [x] **TASK-401 `[AUTO]`: Implement EGM Automation Harness**
+  - *Target:* [`scripts/run_egm_cycle.sh`](file:///Users/efsa/Repos/emergent/scripts/run_egm_cycle.sh)
+  - *Criteria:* Automation script to inspect EGM status and validate schema consistency across design specs and review reports.
+  - *Status:* Completed
 
-- [ ] **TASK-402 `[AUTO]`: Implement Continuous Verification Harness**
-  - *Target:* [`scripts/verify_implementation.sh`](file:///Users/efsa/Repos/emergent/scripts)
-  - *Criteria:* One-command runner executing formatting, linting, and headless engine unit tests.
-  - *Status:* Pending (Blocked by TASK-304)
+- [x] **TASK-402 `[AUTO]`: Implement Continuous Verification Harness**
+  - *Target:* [`scripts/verify_implementation.sh`](file:///Users/efsa/Repos/emergent/scripts/verify_implementation.sh)
+  - *Criteria:* One-command runner executing markdown cleanliness, engine TypeScript compilation, and headless Vitest unit tests.
+  - *Status:* Completed
 
 ---
 

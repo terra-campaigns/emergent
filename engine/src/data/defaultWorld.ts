@@ -31,7 +31,8 @@ export function createDefaultWorld(): WorldState {
     height: 8,
     tiles: TILES_LAYOUT,
     player: {
-      id: 'player_001',
+      id: 'tribal_wanderer',
+      title: 'A tribal wanderer',
       position: { x: 1, y: 1 },
       inventory: [],
       maxCarryWeightGrams: 2000, // 2kg capacity
