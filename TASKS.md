@@ -56,10 +56,10 @@ flowchart LR
   - *Criteria:* Standardised schemas for invariants, state machines, tick updates, and Goldfish review rubrics.
   - *Status:* Completed
 
-- [ ] **TASK-004 `[AUTO]`: Organise Initial Scaffolding Docs**
-  - *Target:* [`docs/scaffolding_chat_context.md`](file:///Users/efsa/Repos/emergent/docs/scaffolding_chat_context.md) and [`docs/conversation_export.md`](file:///Users/efsa/Repos/emergent/docs/conversation_export.md)
-  - *Criteria:* Ensure historical context is tracked or archived cleanly in `docs/context/`.
-  - *Status:* Pending
+- [x] **TASK-004 `[AUTO]`: Migrate & Retire Initial Scaffolding Exports**
+  - *Target:* [`docs/concepts/concepts_brief.md`](file:///Users/efsa/Repos/emergent/docs/concepts/concepts_brief.md), [`PITCH.md`](file:///Users/efsa/Repos/emergent/PITCH.md), and [`README.md`](file:///Users/efsa/Repos/emergent/README.md)
+  - *Criteria:* Fully migrate series context (`hostile`, `unsettled`, `charged`), 5-layer title etymology, and Mermaid architecture diagrams into living docs; cleanly remove `docs/conversation_export.md` and `docs/scaffolding_chat_context.md`.
+  - *Status:* Completed
 
 - [x] **TASK-005 `[AUTO]`: Author Collaborator-Player-Developer Pitch**
   - *Target:* [`PITCH.md`](file:///Users/efsa/Repos/emergent/PITCH.md)
