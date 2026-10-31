@@ -37,8 +37,19 @@ command_status() {
     [ -e "$review" ] || continue
     basename=$(basename "$review")
     [ "$basename" = "TEMPLATE.md" ] && continue
+    [ "$basename" = "PR_REVIEW_TEMPLATE.md" ] && continue
+    [[ "$basename" == pr_* ]] && continue
 
     verdict_line=$(grep -E "^(\*\*)?Verdict:(\*\*)?" "$review" | head -n 1 || echo "Verdict: Unknown")
+    echo -e "  • ${BOLD}${basename}${NC} — ${verdict_line}"
+  done
+
+  echo -e "\n${BOLD}Pull Request Review Reports (docs/reviews/):${NC}"
+  for pr_review in "${REVIEWS_DIR}"/pr_*.md; do
+    [ -e "$pr_review" ] || continue
+    basename=$(basename "$pr_review")
+
+    verdict_line=$(grep -E "^(\*\*)?Verdict:(\*\*)?" "$pr_review" | head -n 1 || echo "Verdict: Unknown")
     echo -e "  • ${BOLD}${basename}${NC} — ${verdict_line}"
   done
   echo ""

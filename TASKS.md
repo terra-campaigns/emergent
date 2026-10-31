@@ -77,6 +77,11 @@ flowchart LR
   - *Criteria:* High-visibility manifesto framing the project for collaborator-player-developers, highlighting the EGM spec-driven method, deterministic simulation, lore sovereignty, and multi-faceted participation channels.
   - *Status:* Completed
 
+- [x] **TASK-006 `[AUTO]`: Establish Principal Code Reviewer & PR Review Framework**
+  - *Target:* [`.agents/agents/code-reviewer/agent.md`](file:///Users/efsa/Repos/emergent/.agents/agents/code-reviewer/agent.md), [`.agents/skills/review-pr/`](file:///Users/efsa/Repos/emergent/.agents/skills/review-pr), and [`docs/reviews/PR_REVIEW_TEMPLATE.md`](file:///Users/efsa/Repos/emergent/docs/reviews/PR_REVIEW_TEMPLATE.md)
+  - *Criteria:* Define read-only `code-reviewer` agent persona ("The Gatekeeper"), 8-Pillar rubric reference, Conventional Comments standards, mandatory verification runner execution, and traceable provenance signatures.
+  - *Status:* Completed
+
 ---
 
 ### Phase 1: Core Gameplay Loop Design (Elephant Phase)
