@@ -24,6 +24,7 @@ All feature development must strictly follow the **Elephant-Goldfish Model (EGM)
   2. **Automated Verification Gates:** Committing clean, passing state implementations after 100% of automated unit tests pass.
   3. **Milestone Completions:** Committing major task board updates (`TASKS.md`) when a roadmap phase completes.
 * **Human Pull Request Approval Gate:** Changes to `main` strictly require a GitHub Pull Request with at least one human approval. The agent prepares the PR and awaits human review and merge.
+* **Automated Branch Deletion on Merge:** The repository enforces automated head branch deletion upon PR merge (`delete_branch_on_merge: true`). Merged feature and agent branches (`agent/*`) are automatically deleted on GitHub once closed and merged, with local tracking branches pruned accordingly.
 * **Co-Authorship Standards:** The repository owner (`Estevao Alvarenga`) is the primary author of all work. All autonomous commits must credit the AI model as co-author using the standard Git trailer:
   ```text
   Co-authored-by: Gemini 3.8 Flash <gemini-flash@google.com>
@@ -83,3 +84,24 @@ All items added to task boards (`TASKS.md`) must be tagged with one of three exe
 * **`[AUTO]` (Autonomous):** Executed entirely by the AI agent without requiring interactive human pauses (e.g. scaffolding manifests, writing pure reducers, running unit test suites).
 * **`[SEMI]` (Semi-Autonomous):** Drafted or staged by the AI agent, but requiring developer review, parameter confirmation, or boundary validation before proceeding.
 * **`[HUMAN]` (Human-Driven):** Exclusively reserved for human authority (e.g. narrative lore authorship, qualitative playability evaluation, architectural contract approvals, and git commit authorisations).
+
+---
+
+## 10. Pull Request Code Review Framework & Reviewer Persona
+
+Every Pull Request targeting `main` must be reviewed by the **Principal Code Reviewer ("The Gatekeeper")** agent defined in [`.agents/agents/code-reviewer/agent.md`](.agents/agents/code-reviewer/agent.md) using the [`review-pr`](.agents/skills/review-pr/SKILL.md) skill:
+
+* **The 8-Pillar Code Review Framework (Google Engineering Practices + EGM Governance):**
+  1. **`DESIGN` (Design & EGM Contract Alignment):** Verifies that every feature has an approved specification in `docs/designs/`, a passing Goldfish review in `docs/reviews/`, zero specification drift, and strict decoupling between `engine/` and `client/`.
+  2. **`FUNCTIONALITY` (Functionality, Purity & Determinism):** Verifies pure reducer transitions, strict immutability of input state, platform-independent determinism, and boundary/collision edge-case handling.
+  3. **`COMPLEXITY` (Complexity & Maintainability):** Rejects over-engineering, dead code, and convoluted control flow in favour of simple, composable functions.
+  4. **`TESTS` (Automated Tests & Verification):** Requires passing unit tests (`engine/tests/`), conservation fuzzing, Playwright perception tests (`client/tests/e2e/`), and zero errors from `./scripts/run_egm_cycle.sh validate` and `./scripts/verify_implementation.sh`.
+  5. **`NAMING` (Naming & Domain Clarity):** Enforces ubiquitous domain terminology matching `docs/designs/`.
+  6. **`COMMENTS_DOCS` (Comments, `TASKS.md` & Markdown Hygiene):** Verifies *why*-focused comments, accurate synchronisation of `TASKS.md` and the `Human Input Registry`, and strict compliance with the Markdown blank-line-after-heading constraint.
+  7. **`STYLE_TYPES` (Style, Type Safety & Git Hygiene):** Enforces TypeScript `--strict` (`readonly` state schemas, discriminated unions, zero `any`), `agent/*` branch isolation, and Conventional Commits with co-authorship trailers.
+  8. **`LORE_LOCALISATION` (Narrative Sovereignty & British English):** Enforces 100% British English across all text and prompts, and blocks any unauthorised AI-invented world lore.
+* **Conventional Comments Taxonomy:** All findings must be formatted as `<label> (<severity>, <pillar>): [file:line](file:///...) — <Subject>` using labels `issue`, `suggestion`, `question`, `nitpick`, `thought`, or `praise` and severity decorations `blocking` or `non-blocking`.
+* **Review Artefacts & Provenance Signature:** Formal PR review reports follow [`docs/reviews/PR_REVIEW_TEMPLATE.md`](docs/reviews/PR_REVIEW_TEMPLATE.md) and are saved as `docs/reviews/pr_<PR_NUMBER>_<slug>_review.md`. Every review report and GitHub PR comment must be signed at the bottom with the human-readable **Model Name** and **Skill Version** (`review-pr v1.0.0`):
+  ```markdown
+  *Signed by: **Principal Code Reviewer ("The Gatekeeper")** (`code-reviewer`) · Model: **`<Model Name>`** · Skill: **`review-pr v1.0.0`** · Date: `<YYYY-MM-DD>`*
+  ```
