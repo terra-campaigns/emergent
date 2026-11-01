@@ -9,8 +9,8 @@
 
 * **Orchestrator Model:** Gemini Flash (strictly enforced unless manually overridden)
 * **Quota Guardrails:** Cease autonomous development if rolling 5-hour limit < 20% or weekly limit < 30%
-* **Current Phase:** Phase 12 — Human Playability Sign-off (Milestone 2)
-* **Current Active Focus:** TASK-1201 `[HUMAN]`: Developer Playtest & Pacing Evaluation
+* **Current Phase:** Phase 15 — Headless 24XX Rules Engine Implementation
+* **Current Active Focus:** TASK-1501 `[AUTO]`: Seeded PRNG & Polyhedral Dice Module in `engine/src/rules/dice.ts`
 
 ---
 
@@ -20,6 +20,7 @@ This registry tracks all living documents that await developer decisions, narrat
 
 | Document | Task ID | Focus / Required Input | State |
 | :--- | :--- | :--- | :--- |
+| [[docs/designs/003_rules_system_24xx.md]] | `TASK-1302 [HUMAN]` | Technical design sign-off: 24XX step dice, condition track, gear sacrifice & risk prompts | **Approved by Developer** |
 | [[docs/playtests/002_milestone_2_playtest.md]] | `TASK-1201 [HUMAN]` | Qualitative playtest: hex traversal, 8-hour watches, search mechanics & M3 priorities | **Active Canvas (Awaiting Playtest)** |
 | [[docs/designs/002_hex_grid_and_time_economy.md]] | `TASK-802 [HUMAN]` | Technical design sign-off: hex coordinates, 8-hour watches, and search system | **Approved by Developer** |
 | [[docs/lore/open_questions.md]] | `TASK-303 [HUMAN]` | Location canvases: Starting vista, monolith, cairn, barriers, night atmosphere | **Active Canvas** (Sections 5.1–5.8) |
@@ -49,13 +50,19 @@ flowchart LR
         P4 --> P5["Phase 5: Client"]
         P5 --> P6["Phase 6: Sign-off"]
     end
-    subgraph M2["Milestone 2: Hex Grid & Time Economy (Active)"]
+    subgraph M2["Milestone 2: Hex Grid & Time Economy (Complete / PR #3)"]
         P6 --> P7["Phase 7: Hex Spec"]
         P7 --> P8["Phase 8: Review"]
         P8 --> P9["Phase 9: Hex Engine"]
         P9 --> P10["Phase 10: Tests"]
         P10 --> P11["Phase 11: Hex Client"]
         P11 --> P12["Phase 12: Playtest"]
+    end
+    subgraph M3["Milestone 3: 24XX Rules & Resolution System (Active Front)"]
+        P12 --> P13["Phase 13: 24XX Spec"]
+        P13 --> P14["Phase 14: Review"]
+        P14 --> P15["Phase 15: Rules Engine"]
+        P15 --> P16["Phase 16: Verification"]
     end
 ```
 
@@ -267,4 +274,49 @@ flowchart LR
   - *Target:* `docs/playtests/002_milestone_2_playtest.md`
   - *Criteria:* Human evaluation of hex travel pacing, search discovery excitement, day/night atmospheric rhythm, and Milestone 3 (24XX ruleset) priorities.
   - *Status:* Active (Canvas prepared)
-  - *Status:* Pending Phase 11
+
+---
+
+### Phase 13: Milestone 3 24XX Rules & Resolution System Specification (Elephant Phase)
+
+- [x] **TASK-1301 `[AUTO]`: Draft 24XX Rules & Resolution Specification**
+  - *Target:* `docs/designs/003_rules_system_24xx.md`
+  - *Criteria:* Strict no-code EGM specification defining polyhedral step dice (`d4`–`d12`), 24XX ternary outcomes, wanderer background archetypes, condition track, gear sacrifice, passive relic mitigation, and explicit `RiskPrompt` dispatch.
+  - *Status:* Completed (Elephant draft authored)
+
+- [x] **TASK-1302 `[HUMAN]`: Human Developer Design Approval Gate**
+  - *Target:* `docs/designs/003_rules_system_24xx.md`
+  - *Criteria:* Review and formal sign-off on the 24XX rules architecture by the human developer.
+  - *Status:* Completed (Approved by developer)
+
+---
+
+### Phase 14: Goldfish Stress-Test & Spec Formalisation
+
+- [x] **TASK-1401 `[AUTO]`: Zero-Context Goldfish Review**
+  - *Target:* `docs/reviews/003_rules_system_24xx_review.md`
+  - *Criteria:* Independent adversarial review probing risk prompt deadlocks, gear sacrifice exploits, PRNG seed drift, and condition recovery loopholes.
+  - *Status:* Completed (8 critical revisions incorporated and validated)
+
+---
+
+### Phase 15: Headless 24XX Rules Engine Implementation
+
+- [/] **TASK-1501 `[AUTO]`: Seeded PRNG & Polyhedral Dice Module**
+  - *Target:* `engine/src/rules/dice.ts`
+  - *Criteria:* Pure Mulberry32 PRNG state progression and uniform polyhedral dice generation.
+  - *Status:* In Progress
+
+- [ ] **TASK-1502 `[AUTO]`: Condition Track & Gear Sacrifice Reducer**
+  - *Target:* `engine/src/rules/` and `engine/src/hex/step.ts`
+  - *Criteria:* Integrate `RiskPrompt` interception, `RESOLVE_RISK`, `ABORT_RISK`, condition decay, and gear sacrifice into simulation reducer.
+  - *Status:* Pending TASK-1501
+
+---
+
+### Phase 16: Playwright & Perception Verification
+
+- [ ] **TASK-1601 `[AUTO]`: 24XX Deterministic Fuzzing & Perception Tests**
+  - *Target:* `engine/tests/` and `client/tests/e2e/`
+  - *Criteria:* 100% automated test coverage across PRNG determinism, condition progression, risk modal interaction, and gear sacrifice.
+  - *Status:* Pending Phase 15
