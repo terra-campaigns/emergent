@@ -87,21 +87,10 @@ All items added to task boards (`TASKS.md`) must be tagged with one of three exe
 
 ---
 
-## 10. Pull Request Code Review Framework & Reviewer Persona
+## 10. Code Review & Architecture Coaching
 
-Every Pull Request targeting `main` must be reviewed by the **Principal Code Reviewer ("The Gatekeeper")** agent defined in [`.agents/agents/code-reviewer/agent.md`](.agents/agents/code-reviewer/agent.md) using the [`review-pr`](.agents/skills/review-pr/SKILL.md) skill:
+Pull Request reviews and framework scouting are governed by the global agentic tools maintained in the [**`artifice`**](https://github.com/efsalvarenga/artifice) repository:
 
-* **The 8-Pillar Code Review Framework (Google Engineering Practices + EGM Governance):**
-  1. **`DESIGN` (Design & EGM Contract Alignment):** Verifies that every feature has an approved specification in `docs/designs/`, a passing Goldfish review in `docs/reviews/`, zero specification drift, and strict decoupling between `engine/` and `client/`.
-  2. **`FUNCTIONALITY` (Functionality, Purity & Determinism):** Verifies pure reducer transitions, strict immutability of input state, platform-independent determinism, and boundary/collision edge-case handling.
-  3. **`COMPLEXITY` (Complexity & Maintainability):** Rejects over-engineering, dead code, and convoluted control flow in favour of simple, composable functions.
-  4. **`TESTS` (Automated Tests & Verification):** Requires passing unit tests (`engine/tests/`), conservation fuzzing, Playwright perception tests (`client/tests/e2e/`), and zero errors from `./scripts/run_egm_cycle.sh validate` and `./scripts/verify_implementation.sh`.
-  5. **`NAMING` (Naming & Domain Clarity):** Enforces ubiquitous domain terminology matching `docs/designs/`.
-  6. **`COMMENTS_DOCS` (Comments, `TASKS.md` & Markdown Hygiene):** Verifies *why*-focused comments, accurate synchronisation of `TASKS.md` and the `Human Input Registry`, and strict compliance with the Markdown blank-line-after-heading constraint.
-  7. **`STYLE_TYPES` (Style, Type Safety & Git Hygiene):** Enforces TypeScript `--strict` (`readonly` state schemas, discriminated unions, zero `any`), `agent/*` branch isolation, and Conventional Commits with co-authorship trailers.
-  8. **`LORE_LOCALISATION` (Narrative Sovereignty & British English):** Enforces 100% British English across all text and prompts, and blocks any unauthorised AI-invented world lore.
-* **Conventional Comments Taxonomy:** All findings must be formatted as `<label> (<severity>, <pillar>): [file:line](file:///...) — <Subject>` using labels `issue`, `suggestion`, `question`, `nitpick`, `thought`, or `praise` and severity decorations `blocking` or `non-blocking`.
-* **Review Artefacts & Provenance Signature:** Formal PR review reports follow [`docs/reviews/PR_REVIEW_TEMPLATE.md`](docs/reviews/PR_REVIEW_TEMPLATE.md) and are saved as `docs/reviews/pr_<PR_NUMBER>_<slug>_review.md`. Every review report and GitHub PR comment must be signed at the bottom with the human-readable **Model Name** and **Skill Version** (`review-pr v1.0.0`):
-  ```markdown
-  *Signed by: **Principal Code Reviewer ("The Gatekeeper")** (`code-reviewer`) · Model: **`<Model Name>`** · Skill: **`review-pr v1.0.0`** · Date: `<YYYY-MM-DD>`*
-  ```
+* **Pull Request Reviews:** Handled by the [`review-pr`](https://github.com/efsalvarenga/artifice/tree/main/skills/review-pr) skill and [`code-reviewer`](https://github.com/efsalvarenga/artifice/tree/main/agents/code-reviewer) agent ("The Gatekeeper"). Reviews systematically evaluate changes against universal 8-Pillar standards alongside the project-specific invariants defined in Sections 1, 2, and 5 of this document.
+* **Framework Coaching & DX:** Handled by the [`coach-frameworks`](https://github.com/efsalvarenga/artifice/tree/main/skills/coach-frameworks) skill and [`developer-coach`](https://github.com/efsalvarenga/artifice/tree/main/agents/developer-coach) agent ("The Catalyst").
+* **Collaborator Setup:** To enable these capabilities locally, clone [`efsalvarenga/artifice`](https://github.com/efsalvarenga/artifice) and register its `skills` directory inside your global `~/.gemini/config/skills.json`.
