@@ -89,7 +89,7 @@ All items added to task boards (`TASKS.md`) must be tagged with one of three exe
 
 ## 10. Pull Request Code Review Framework & Reviewer Persona
 
-Every Pull Request targeting `main` must be reviewed by the **Principal Code Reviewer ("The Gatekeeper")** agent defined in [`.agents/agents/code-reviewer/agent.md`](.agents/agents/code-reviewer/agent.md) using the [`review-pr`](.agents/skills/review-pr/SKILL.md) skill:
+Every Pull Request targeting `main` must be reviewed by the **Principal Code Reviewer ("The Gatekeeper")** agent using the global [`review-pr`](https://github.com/efsalvarenga/artifice/tree/main/skills/review-pr) skill from `artifice`:
 
 * **The 8-Pillar Code Review Framework (Google Engineering Practices + EGM Governance):**
   1. **`DESIGN` (Design & EGM Contract Alignment):** Verifies that every feature has an approved specification in `docs/designs/`, a passing Goldfish review in `docs/reviews/`, zero specification drift, and strict decoupling between `engine/` and `client/`.
@@ -103,5 +103,5 @@ Every Pull Request targeting `main` must be reviewed by the **Principal Code Rev
 * **Conventional Comments Taxonomy:** All findings must be formatted as `<label> (<severity>, <pillar>): [file:line](file:///...) — <Subject>` using labels `issue`, `suggestion`, `question`, `nitpick`, `thought`, or `praise` and severity decorations `blocking` or `non-blocking`.
 * **Review Artefacts & Provenance Signature:** Formal PR review reports follow [`docs/reviews/PR_REVIEW_TEMPLATE.md`](docs/reviews/PR_REVIEW_TEMPLATE.md) and are saved as `docs/reviews/pr_<PR_NUMBER>_<slug>_review.md`. Every review report and GitHub PR comment must be signed at the bottom with the human-readable **Model Name** and **Skill Version** (`review-pr v1.0.0`):
   ```markdown
-  *Signed by: **Principal Code Reviewer ("The Gatekeeper")** (`code-reviewer`) · Model: **`<Model Name>`** · Skill: **`review-pr v1.0.0`** · Date: `<YYYY-MM-DD>`*
+  *Signed by: **Principal Code Reviewer ("The Gatekeeper")** (`code-reviewer`) · Model: **`<Model Name>`** · Skill: **`review-pr v1.1.0`** · Date: `<YYYY-MM-DD>`*
   ```
