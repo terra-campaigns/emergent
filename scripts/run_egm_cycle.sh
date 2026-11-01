@@ -56,42 +56,46 @@ command_status() {
 }
 
 command_validate() {
-  echo -e "${BOLD}${BLUE}=== Validating EGM Contract Consistency ===${NC}\n"
-  ERRORS=0
-
-  for spec in "${DESIGNS_DIR}"/*.md; do
-    [ -e "$spec" ] || continue
-    basename=$(basename "$spec")
-    [ "$basename" = "TEMPLATE.md" ] && continue
-
-    # Check that a corresponding review file exists
-    spec_num=$(echo "$basename" | grep -o -E '^[0-9]+' || true)
-    if [ -n "$spec_num" ]; then
-      matching_review=$(find "${REVIEWS_DIR}" -name "${spec_num}_*.md" | head -n 1)
-      if [ -z "$matching_review" ]; then
-        echo -e "  ${RED}✗${NC} Specification ${basename} lacks a Goldfish review in docs/reviews/."
-        ERRORS=$((ERRORS + 1))
-      else
-        echo -e "  ${GREEN}✓${NC} Specification ${basename} has matching review: $(basename "$matching_review")"
-      fi
-    fi
-
-    # Check for required sections in the specification
-    for section in "1. Overview & Objectives" "3. State Schema & Data Models" "4. Invariants & Rules" "5. Simulation & Tick Mechanics" "7. Verification & Automated Test Strategy"; do
-      if ! grep -q "$section" "$spec"; then
-        echo -e "  ${RED}✗${NC} Specification ${basename} is missing section '${section}'."
-        ERRORS=$((ERRORS + 1))
-      fi
-    done
-  done
-
-  echo ""
-  if [ "$ERRORS" -eq 0 ]; then
-    echo -e "${GREEN}${BOLD}✓ EGM Specification contracts are consistent and complete.${NC}"
-    return 0
+  if [ -f "${HOME}/Repos/artifice/scripts/validate_egm.py" ]; then
+    python3 "${HOME}/Repos/artifice/scripts/validate_egm.py" "${REPO_ROOT}"
   else
-    echo -e "${RED}${BOLD}✗ EGM Validation failed with ${ERRORS} error(s).${NC}"
-    return 1
+    echo -e "${BOLD}${BLUE}=== Validating EGM Contract Consistency ===${NC}\n"
+    ERRORS=0
+
+    for spec in "${DESIGNS_DIR}"/*.md; do
+      [ -e "$spec" ] || continue
+      basename=$(basename "$spec")
+      [ "$basename" = "TEMPLATE.md" ] && continue
+
+      # Check that a corresponding review file exists
+      spec_num=$(echo "$basename" | grep -o -E '^[0-9]+' || true)
+      if [ -n "$spec_num" ]; then
+        matching_review=$(find "${REVIEWS_DIR}" -name "${spec_num}_*.md" | head -n 1)
+        if [ -z "$matching_review" ]; then
+          echo -e "  ${RED}✗${NC} Specification ${basename} lacks a Goldfish review in docs/reviews/."
+          ERRORS=$((ERRORS + 1))
+        else
+          echo -e "  ${GREEN}✓${NC} Specification ${basename} has matching review: $(basename "$matching_review")"
+        fi
+      fi
+
+      # Check for required sections in the specification
+      for section in "1. Overview & Objectives" "3. State Schema & Data Models" "4. Invariants & Rules" "5. Simulation & Tick Mechanics" "7. Verification & Automated Test Strategy"; do
+        if ! grep -q "$section" "$spec"; then
+          echo -e "  ${RED}✗${NC} Specification ${basename} is missing section '${section}'."
+          ERRORS=$((ERRORS + 1))
+        fi
+      done
+    done
+
+    echo ""
+    if [ "$ERRORS" -eq 0 ]; then
+      echo -e "${GREEN}${BOLD}✓ EGM Specification contracts are consistent and complete.${NC}"
+      return 0
+    else
+      echo -e "${RED}${BOLD}✗ EGM Validation failed with ${ERRORS} error(s).${NC}"
+      return 1
+    fi
   fi
 }
 
