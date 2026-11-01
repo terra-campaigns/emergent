@@ -74,7 +74,7 @@ All feature development strictly adheres to the **Elephant-Goldfish Model (EGM)*
 
 When an implementation requires human decisions, narrative lore, or qualitative evaluation:
 * **Never Block Autonomous Flow:** Do not halt technical progress waiting for human creative input. Inject neutral technical placeholders (e.g. `"Traveller"`, `"Relic Alpha"`) and proceed with headless logic and automated tests.
-* **Dedicated Input Canvases & Decision Ledgers:** All open human questions must be written into dedicated living documents following the `coordinate-fronts` Decision Ledger standard from `artifice` (e.g. `docs/lore/open_questions.md`, `docs/playtests/*.md`).
+* **Dedicated Input Canvases:** All open creative and narrative questions must be written into dedicated living markdown canvases (e.g. `docs/lore/open_questions.md`, `docs/playtests/*.md`) or resolved interactively via Antigravity's native `ask_question` tool.
 * **Centralised Registry in `TASKS.md`:** Maintain a `## Human Input Registry` table at the very top of `TASKS.md`, listing every active document requiring human input, its task ID, and its status.
 
 ---
