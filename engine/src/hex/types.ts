@@ -4,6 +4,12 @@
  */
 
 import { RelicItem } from '../types.js';
+import {
+  RiskPrompt,
+  RollResult,
+  WandererCharacterSheet,
+  WandererCondition,
+} from '../rules/types.js';
 
 // -----------------------------------------------------------------------------
 // Hexagonal Geometry Types
@@ -116,6 +122,9 @@ export interface HexWorldState {
   readonly radius: number; // Hex grid radius from origin (0, 0)
   readonly tiles: readonly HexTile[]; // Unique list of hex tiles
   readonly player: HexPlayerEntity;
+  readonly character: WandererCharacterSheet;
+  readonly pendingRisk?: RiskPrompt | undefined; // Present when simulation awaits player risk resolution
+  readonly rngState: number; // 32-bit deterministic PRNG seed
 }
 
 // -----------------------------------------------------------------------------
@@ -127,7 +136,9 @@ export type HexGameAction =
   | { readonly type: 'SEARCH' }
   | { readonly type: 'REST' }
   | { readonly type: 'PICKUP'; readonly itemId?: string }
-  | { readonly type: 'DROP'; readonly itemId: string };
+  | { readonly type: 'DROP'; readonly itemId: string }
+  | { readonly type: 'RESOLVE_RISK'; readonly invokeBackground: boolean; readonly sacrificeItemId?: string }
+  | { readonly type: 'ABORT_RISK' };
 
 export type HexGameEvent =
   | { readonly type: 'PLAYER_TRAVELLED'; readonly from: HexCoordinate; readonly to: HexCoordinate; readonly costWatches: 1 }
@@ -137,7 +148,12 @@ export type HexGameEvent =
   | { readonly type: 'DISCOVERY_REVEALED'; readonly coordinate: HexCoordinate; readonly discovery: HexDiscovery }
   | { readonly type: 'ITEM_PICKED_UP'; readonly item: RelicItem }
   | { readonly type: 'ITEM_DROPPED'; readonly item: RelicItem; readonly coordinate: HexCoordinate }
-  | { readonly type: 'ACTION_REJECTED'; readonly reason: string };
+  | { readonly type: 'ACTION_REJECTED'; readonly reason: string }
+  | { readonly type: 'RISK_ENCOUNTERED'; readonly prompt: RiskPrompt }
+  | { readonly type: 'DICE_ROLLED'; readonly roll: RollResult; readonly context: string }
+  | { readonly type: 'CONDITION_CHANGED'; readonly from: WandererCondition; readonly to: WandererCondition; readonly reason: string }
+  | { readonly type: 'GEAR_SACRIFICED'; readonly itemId: string; readonly itemTitle: string }
+  | { readonly type: 'RISK_ABORTED'; readonly reason: string };
 
 export interface HexSimulationResult {
   readonly state: HexWorldState;

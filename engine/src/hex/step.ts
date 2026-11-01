@@ -1,6 +1,7 @@
 /**
- * Authoritative pure reducer for the hexagonal world simulation.
- * Strictly adheres to docs/designs/002_hex_grid_and_time_economy.md.
+ * Authoritative pure reducer for the hexagonal world simulation and 24XX rules system.
+ * Strictly adheres to docs/designs/002_hex_grid_and_time_economy.md
+ * and docs/designs/003_rules_system_24xx.md.
  */
 
 import { advanceClock } from './clock.js';
@@ -13,6 +14,8 @@ import {
   HexTile,
   HexWorldState,
 } from './types.js';
+import { rollStepDie } from '../rules/dice.js';
+import { RiskPrompt, StepDie, WandererCondition } from '../rules/types.js';
 
 /**
  * Returns the hex tile residing at the specified coordinate, or undefined if outside grid.
@@ -25,6 +28,33 @@ export function getHexTile(state: HexWorldState, coord: { q: number; r: number }
  * Pure reducer function executing a discrete game action upon HexWorldState.
  */
 export function hexStep(state: HexWorldState, action: HexGameAction): HexSimulationResult {
+  // ---------------------------------------------------------------------------
+  // Invariant 8: Modal State Lock
+  // While pendingRisk is active, only RESOLVE_RISK and ABORT_RISK are permitted.
+  // ---------------------------------------------------------------------------
+  if (state.pendingRisk !== undefined && action.type !== 'RESOLVE_RISK' && action.type !== 'ABORT_RISK') {
+    return {
+      state,
+      events: [{
+        type: 'ACTION_REJECTED',
+        reason: 'Must resolve or abort pending risk before taking further actions.',
+      }],
+      success: false,
+    };
+  }
+
+  // Incapacitation Action Filter: Incapacitated wanderers cannot travel or search.
+  if (state.character.condition === 'incapacitated' && (action.type === 'TRAVEL' || action.type === 'SEARCH')) {
+    return {
+      state,
+      events: [{
+        type: 'ACTION_REJECTED',
+        reason: 'Wanderer is incapacitated; must rest to recover.',
+      }],
+      success: false,
+    };
+  }
+
   switch (action.type) {
     case 'TRAVEL': {
       const targetCoord = hexNeighbor(state.player.coordinate, action.direction);
@@ -49,7 +79,38 @@ export function hexStep(state: HexWorldState, action: HexGameAction): HexSimulat
         };
       }
 
-      // 3. Advance diurnal clock (consumes 1 Watch)
+      // 3. Contextual Peril Interception: Night Traversal without unbroken light source
+      const isNight = state.clock.watch === 'night';
+      const hasUnbrokenLight = state.player.inventory.some(
+        (item) => item.id === 'relic_battery_01' && !state.character.brokenItemIds.includes(item.id)
+      );
+
+      if (isNight && !hasUnbrokenLight) {
+        const prompt: RiskPrompt = Object.freeze({
+          id: 'risk_night_traversal',
+          title: 'Pitch Darkness Navigation',
+          description: 'Attempting to traverse the treacherous wastes at night without a functioning portable light source.',
+          severity: 'moderate',
+          stakes: 'Disorientation (losing an extra watch) or twisting an ankle on slag (becoming hindered).',
+          sourceAction: action,
+          applicableBackgroundId: 'nomad_guide',
+          defaultDie: state.character.condition === 'hindered' ? 'd4' : 'd6',
+          availableSacrificeItemIds: Object.freeze(
+            state.player.inventory.map((i) => i.id).filter((id) => !state.character.brokenItemIds.includes(id))
+          ),
+        });
+
+        return {
+          state: Object.freeze({
+            ...state,
+            pendingRisk: prompt,
+          }),
+          events: Object.freeze([{ type: 'RISK_ENCOUNTERED', prompt }]),
+          success: true,
+        };
+      }
+
+      // 4. Safe Traversal: Advance diurnal clock (consumes 1 Watch)
       const { clock: newClock, dayDawned } = advanceClock(state.clock);
       const events: HexGameEvent[] = [];
 
@@ -147,10 +208,39 @@ export function hexStep(state: HexWorldState, action: HexGameAction): HexSimulat
       }
       events.push({ type: 'WATCH_ADVANCED', clock: newClock });
 
+      // Condition recovery rules
+      let nextCharacter = state.character;
+      if (state.character.condition === 'hindered') {
+        nextCharacter = Object.freeze({ ...state.character, condition: 'healthy' });
+        events.push({
+          type: 'CONDITION_CHANGED',
+          from: 'hindered',
+          to: 'healthy',
+          reason: 'Rested through the watch; recovered from hindrance.',
+        });
+      } else if (state.character.condition === 'injured' && dayDawned) {
+        nextCharacter = Object.freeze({ ...state.character, condition: 'hindered' });
+        events.push({
+          type: 'CONDITION_CHANGED',
+          from: 'injured',
+          to: 'hindered',
+          reason: 'Rested through dawn; injury improved to hindered.',
+        });
+      } else if (state.character.condition === 'incapacitated' && dayDawned) {
+        nextCharacter = Object.freeze({ ...state.character, condition: 'injured' });
+        events.push({
+          type: 'CONDITION_CHANGED',
+          from: 'incapacitated',
+          to: 'injured',
+          reason: 'Rested through dawn; recovered from incapacitation to injured.',
+        });
+      }
+
       return {
         state: Object.freeze({
           ...state,
           clock: newClock,
+          character: nextCharacter,
         }),
         events: Object.freeze(events),
         success: true,
@@ -191,7 +281,6 @@ export function hexStep(state: HexWorldState, action: HexGameAction): HexSimulat
           );
 
       if (discoveryIndex === -1) {
-        // If there's an unsearched hidden discovery with an item, inform the player
         const hasHidden = currentTile.discoveries.some((d) => d.visibility === 'hidden' && d.item);
         if (hasHidden) {
           return {
@@ -299,6 +388,239 @@ export function hexStep(state: HexWorldState, action: HexGameAction): HexSimulat
         events: Object.freeze([
           { type: 'ITEM_DROPPED', item, coordinate: state.player.coordinate },
         ]),
+        success: true,
+      };
+    }
+
+    case 'ABORT_RISK': {
+      if (!state.pendingRisk) {
+        return {
+          state,
+          events: [{ type: 'ACTION_REJECTED', reason: 'No pending risk to abort.' }],
+          success: false,
+        };
+      }
+
+      return {
+        state: Object.freeze({
+          ...state,
+          pendingRisk: undefined,
+        }),
+        events: Object.freeze([
+          { type: 'RISK_ABORTED', reason: 'Wanderer retreated from the peril to safety.' },
+        ]),
+        success: true,
+      };
+    }
+
+    case 'RESOLVE_RISK': {
+      if (!state.pendingRisk) {
+        return {
+          state,
+          events: [{ type: 'ACTION_REJECTED', reason: 'No pending risk to resolve.' }],
+          success: false,
+        };
+      }
+
+      const prompt = state.pendingRisk;
+
+      // Validate sacrificeItemId if provided
+      if (action.sacrificeItemId) {
+        const itemInInventory = state.player.inventory.find((i) => i.id === action.sacrificeItemId);
+        const isAlreadyBroken = state.character.brokenItemIds.includes(action.sacrificeItemId);
+        if (!itemInInventory || isAlreadyBroken) {
+          return {
+            state,
+            events: [{ type: 'ACTION_REJECTED', reason: 'Selected sacrifice item is invalid or already broken.' }],
+            success: false,
+          };
+        }
+      }
+
+      // Determine step die (Invariant 3: hindered condition caps physical rolls at d4)
+      let chosenDie: StepDie = prompt.defaultDie;
+      if (action.invokeBackground && state.character.background.id === prompt.applicableBackgroundId) {
+        chosenDie = state.character.condition === 'hindered' ? 'd4' : state.character.background.die;
+      } else if (state.character.condition === 'hindered') {
+        chosenDie = 'd4';
+      }
+
+      // Cast die via Mulberry32
+      const { result: roll, nextState: nextRngState } = rollStepDie(chosenDie, state.rngState);
+      const events: HexGameEvent[] = [
+        { type: 'DICE_ROLLED', roll, context: prompt.title },
+      ];
+
+      // Process outcome according to clock progression matrix
+      let nextClock = state.clock;
+      let nextPlayer = state.player;
+      let nextTiles = state.tiles;
+      let nextCharacter = state.character;
+
+      if (roll.outcome === 'success') {
+        // Advance clock by 1 watch
+        const advanced = advanceClock(nextClock);
+        nextClock = advanced.clock;
+        if (advanced.dayDawned) events.push({ type: 'DAY_DAWNED', day: nextClock.day });
+        events.push({ type: 'WATCH_ADVANCED', clock: nextClock });
+
+        // Complete source action
+        if (prompt.sourceAction.type === 'TRAVEL') {
+          const targetCoord = hexNeighbor(state.player.coordinate, prompt.sourceAction.direction);
+          nextPlayer = Object.freeze({ ...nextPlayer, coordinate: targetCoord });
+          events.push({
+            type: 'PLAYER_TRAVELLED',
+            from: state.player.coordinate,
+            to: targetCoord,
+            costWatches: 1,
+          });
+        } else if (prompt.sourceAction.type === 'SEARCH') {
+          const currentTile = getHexTile(state, state.player.coordinate);
+          if (currentTile) {
+            const hiddenDiscoveries = currentTile.discoveries.filter((d) => d.visibility === 'hidden');
+            events.push({
+              type: 'HEX_SEARCHED',
+              coordinate: state.player.coordinate,
+              revealedCount: hiddenDiscoveries.length,
+            });
+            const updatedDiscoveries = currentTile.discoveries.map((d) => {
+              if (d.visibility === 'hidden') {
+                const revealed = Object.freeze({ ...d, visibility: 'revealed' as const });
+                events.push({
+                  type: 'DISCOVERY_REVEALED',
+                  coordinate: state.player.coordinate,
+                  discovery: revealed,
+                });
+                return revealed;
+              }
+              return d;
+            });
+            nextTiles = Object.freeze(
+              state.tiles.map((t) =>
+                hexEqual(t.coordinate, state.player.coordinate)
+                  ? Object.freeze({ ...t, discoveries: Object.freeze(updatedDiscoveries) })
+                  : t
+              )
+            );
+          }
+        }
+      } else if (roll.outcome === 'setback') {
+        // Advance clock by 2 watches (1 base + 1 delay complication)
+        const adv1 = advanceClock(nextClock);
+        nextClock = adv1.clock;
+        if (adv1.dayDawned) events.push({ type: 'DAY_DAWNED', day: nextClock.day });
+        events.push({ type: 'WATCH_ADVANCED', clock: nextClock });
+
+        const adv2 = advanceClock(nextClock);
+        nextClock = adv2.clock;
+        if (adv2.dayDawned) events.push({ type: 'DAY_DAWNED', day: nextClock.day });
+        events.push({ type: 'WATCH_ADVANCED', clock: nextClock });
+
+        // Complete source action with delay
+        if (prompt.sourceAction.type === 'TRAVEL') {
+          const targetCoord = hexNeighbor(state.player.coordinate, prompt.sourceAction.direction);
+          nextPlayer = Object.freeze({ ...nextPlayer, coordinate: targetCoord });
+          events.push({
+            type: 'PLAYER_TRAVELLED',
+            from: state.player.coordinate,
+            to: targetCoord,
+            costWatches: 1,
+          });
+        } else if (prompt.sourceAction.type === 'SEARCH') {
+          const currentTile = getHexTile(state, state.player.coordinate);
+          if (currentTile) {
+            const hiddenDiscoveries = currentTile.discoveries.filter((d) => d.visibility === 'hidden');
+            events.push({
+              type: 'HEX_SEARCHED',
+              coordinate: state.player.coordinate,
+              revealedCount: hiddenDiscoveries.length,
+            });
+            const updatedDiscoveries = currentTile.discoveries.map((d) => {
+              if (d.visibility === 'hidden') {
+                const revealed = Object.freeze({ ...d, visibility: 'revealed' as const });
+                events.push({
+                  type: 'DISCOVERY_REVEALED',
+                  coordinate: state.player.coordinate,
+                  discovery: revealed,
+                });
+                return revealed;
+              }
+              return d;
+            });
+            nextTiles = Object.freeze(
+              state.tiles.map((t) =>
+                hexEqual(t.coordinate, state.player.coordinate)
+                  ? Object.freeze({ ...t, discoveries: Object.freeze(updatedDiscoveries) })
+                  : t
+              )
+            );
+          }
+        }
+      } else {
+        // Disaster (1-2)
+        // Advance clock by 1 watch
+        const advanced = advanceClock(nextClock);
+        nextClock = advanced.clock;
+        if (advanced.dayDawned) events.push({ type: 'DAY_DAWNED', day: nextClock.day });
+        events.push({ type: 'WATCH_ADVANCED', clock: nextClock });
+
+        // Action fails: wanderer remains on origin hex
+        if (action.sacrificeItemId) {
+          const sacrificedItem = state.player.inventory.find((i) => i.id === action.sacrificeItemId)!;
+          const nextBroken = Object.freeze([...state.character.brokenItemIds, action.sacrificeItemId]);
+          const prevCond = state.character.condition;
+          const nextCond: WandererCondition = 'hindered';
+          nextCharacter = Object.freeze({
+            ...state.character,
+            brokenItemIds: nextBroken,
+            condition: nextCond,
+          });
+          events.push({
+            type: 'GEAR_SACRIFICED',
+            itemId: action.sacrificeItemId,
+            itemTitle: sacrificedItem.name,
+          });
+          if (prevCond !== nextCond) {
+            events.push({
+              type: 'CONDITION_CHANGED',
+              from: prevCond,
+              to: nextCond,
+              reason: 'Gear broken to absorb disaster; wanderer is hindered.',
+            });
+          }
+        } else {
+          // Unmitigated harm progression
+          const prevCond = state.character.condition;
+          let nextCond: WandererCondition = prevCond;
+          if (prevCond === 'healthy' || prevCond === 'hindered') {
+            nextCond = 'injured';
+          } else if (prevCond === 'injured') {
+            nextCond = 'incapacitated';
+          }
+          nextCharacter = Object.freeze({
+            ...state.character,
+            condition: nextCond,
+          });
+          events.push({
+            type: 'CONDITION_CHANGED',
+            from: prevCond,
+            to: nextCond,
+            reason: 'Unmitigated disaster; sustained physical trauma.',
+          });
+        }
+      }
+
+      return {
+        state: Object.freeze({
+          ...state,
+          clock: nextClock,
+          player: nextPlayer,
+          tiles: nextTiles,
+          character: nextCharacter,
+          pendingRisk: undefined,
+          rngState: nextRngState,
+        }),
+        events: Object.freeze(events),
         success: true,
       };
     }

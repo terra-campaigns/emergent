@@ -9,8 +9,8 @@
 
 * **Orchestrator Model:** Gemini Flash (strictly enforced unless manually overridden)
 * **Quota Guardrails:** Cease autonomous development if rolling 5-hour limit < 20% or weekly limit < 30%
-* **Current Phase:** Phase 15 — Headless 24XX Rules Engine Implementation
-* **Current Active Focus:** TASK-1501 `[AUTO]`: Seeded PRNG & Polyhedral Dice Module in `engine/src/rules/dice.ts`
+* **Current Phase:** Phase 17 — Human Playability Sign-off (Milestone 3)
+* **Current Active Focus:** TASK-1701 `[HUMAN]`: Developer Playtest & 24XX Rules Evaluation
 
 ---
 
@@ -20,8 +20,9 @@ This registry tracks all living documents that await developer decisions, narrat
 
 | Document | Task ID | Focus / Required Input | State |
 | :--- | :--- | :--- | :--- |
+| [[docs/playtests/003_milestone_3_playtest.md]] | `TASK-1701 [HUMAN]` | Qualitative playtest: 24XX step dice, risk modal, gear sacrifice & M4 priorities | **Active Canvas (Awaiting Playtest)** |
 | [[docs/designs/003_rules_system_24xx.md]] | `TASK-1302 [HUMAN]` | Technical design sign-off: 24XX step dice, condition track, gear sacrifice & risk prompts | **Approved by Developer** |
-| [[docs/playtests/002_milestone_2_playtest.md]] | `TASK-1201 [HUMAN]` | Qualitative playtest: hex traversal, 8-hour watches, search mechanics & M3 priorities | **Active Canvas (Awaiting Playtest)** |
+| [[docs/playtests/002_milestone_2_playtest.md]] | `TASK-1201 [HUMAN]` | Qualitative playtest: hex traversal, 8-hour watches, search mechanics & M3 priorities | **Signed Off (Milestone 2 Merged)** |
 | [[docs/designs/002_hex_grid_and_time_economy.md]] | `TASK-802 [HUMAN]` | Technical design sign-off: hex coordinates, 8-hour watches, and search system | **Approved by Developer** |
 | [[docs/lore/open_questions.md]] | `TASK-303 [HUMAN]` | Location canvases: Starting vista, monolith, cairn, barriers, night atmosphere | **Active Canvas** (Sections 5.1–5.8) |
 | [[docs/playtests/001_milestone_1_playtest.md]] | `TASK-601 [HUMAN]` | Qualitative playtest: controls, pacing, visuals, and Milestone 2 priorities | **Signed Off (Milestone 1 Complete)** |
@@ -302,21 +303,30 @@ flowchart LR
 
 ### Phase 15: Headless 24XX Rules Engine Implementation
 
-- [/] **TASK-1501 `[AUTO]`: Seeded PRNG & Polyhedral Dice Module**
-  - *Target:* `engine/src/rules/dice.ts`
+- [x] **TASK-1501 `[AUTO]`: Seeded PRNG & Polyhedral Dice Module**
+  - *Target:* `engine/src/rules/dice.ts` and `engine/src/rules/types.ts`
   - *Criteria:* Pure Mulberry32 PRNG state progression and uniform polyhedral dice generation.
-  - *Status:* In Progress
+  - *Status:* Completed
 
-- [ ] **TASK-1502 `[AUTO]`: Condition Track & Gear Sacrifice Reducer**
+- [x] **TASK-1502 `[AUTO]`: Condition Track & Gear Sacrifice Reducer**
   - *Target:* `engine/src/rules/` and `engine/src/hex/step.ts`
   - *Criteria:* Integrate `RiskPrompt` interception, `RESOLVE_RISK`, `ABORT_RISK`, condition decay, and gear sacrifice into simulation reducer.
-  - *Status:* Pending TASK-1501
+  - *Status:* Completed
 
 ---
 
 ### Phase 16: Playwright & Perception Verification
 
-- [ ] **TASK-1601 `[AUTO]`: 24XX Deterministic Fuzzing & Perception Tests**
-  - *Target:* `engine/tests/` and `client/tests/e2e/`
-  - *Criteria:* 100% automated test coverage across PRNG determinism, condition progression, risk modal interaction, and gear sacrifice.
-  - *Status:* Pending Phase 15
+- [x] **TASK-1601 `[AUTO]`: 24XX Deterministic Fuzzing & Perception Tests**
+  - *Target:* `engine/tests/` and `client/tests/e2e/gameplay.spec.ts`
+  - *Criteria:* 100% automated test coverage across PRNG determinism, condition progression, risk modal interaction, and gear sacrifice (49 engine tests, 5 client e2e tests).
+  - *Status:* Completed
+
+---
+
+### Phase 17: Human Playability Sign-off (Milestone 3)
+
+- [ ] **TASK-1701 `[HUMAN]`: Developer Playtest & 24XX Rules Evaluation**
+  - *Target:* `docs/playtests/003_milestone_3_playtest.md`
+  - *Criteria:* Human evaluation of 24XX ternary resolution pacing, risk modal prompt agency, condition ladder, and Milestone 4 priorities.
+  - *Status:* Active (Canvas prepared)

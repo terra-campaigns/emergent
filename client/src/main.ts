@@ -20,6 +20,12 @@ window.addEventListener('DOMContentLoaded', () => {
     onRest: () => {
       stream.dispatch({ type: 'REST' });
     },
+    onResolveRisk: (invokeBackground, sacrificeItemId) => {
+      stream.dispatch({ type: 'RESOLVE_RISK', invokeBackground, sacrificeItemId });
+    },
+    onAbortRisk: () => {
+      stream.dispatch({ type: 'ABORT_RISK' });
+    },
   });
 
   // Subscribe renderer and HUD to the simulation state stream
@@ -30,7 +36,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Keyboard controls
   window.addEventListener('keydown', (e) => {
+    const currentState = stream.getState();
     let handled = false;
+
+    // When risk modal is active, Escape aborts the risk
+    if (currentState.pendingRisk !== undefined) {
+      if (e.key === 'Escape') {
+        stream.dispatch({ type: 'ABORT_RISK' });
+        e.preventDefault();
+      }
+      return;
+    }
 
     switch (e.key) {
       // Hexagonal movement
@@ -104,9 +120,8 @@ window.addEventListener('DOMContentLoaded', () => {
       // Tactical Drop
       case 'x':
       case 'X': {
-        const state = stream.getState();
-        if (state.player.inventory.length > 0) {
-          const topItem = state.player.inventory[0]!;
+        if (currentState.player.inventory.length > 0) {
+          const topItem = currentState.player.inventory[0]!;
           stream.dispatch({ type: 'DROP', itemId: topItem.id });
         }
         handled = true;

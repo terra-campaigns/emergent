@@ -15,6 +15,11 @@ import {
 } from './types.js';
 import { createInitialClock } from './clock.js';
 import { RelicItem } from '../types.js';
+import {
+  ARCHETYPE_SCAVENGER,
+  WandererBackground,
+  WandererCharacterSheet,
+} from '../rules/types.js';
 
 export const RELIC_BATTERY_CELL: RelicItem = Object.freeze({
   id: 'relic_battery_01',
@@ -50,7 +55,11 @@ export const DEFAULT_HEX_RELICS: Readonly<Record<string, RelicItem>> = Object.fr
  * Constructs the default hexagonal world state.
  * Radius: 2 (19 total hexagons).
  */
-export function createDefaultHexWorld(playerTitle = 'A tribal wanderer'): HexWorldState {
+export function createDefaultHexWorld(
+  playerTitle = 'A tribal wanderer',
+  background: WandererBackground = ARCHETYPE_SCAVENGER,
+  rngSeed = 1337
+): HexWorldState {
   const radius = 2;
   const coords = generateHexCoordinates(radius);
 
@@ -112,10 +121,18 @@ export function createDefaultHexWorld(playerTitle = 'A tribal wanderer'): HexWor
     maxCarryWeightGrams: 2000,
   });
 
+  const character: WandererCharacterSheet = Object.freeze({
+    background,
+    condition: 'healthy',
+    brokenItemIds: Object.freeze([]),
+  });
+
   return Object.freeze({
     clock: createInitialClock(),
     radius,
     tiles: Object.freeze(tiles),
     player,
+    character,
+    rngState: rngSeed,
   });
 }

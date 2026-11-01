@@ -1,30 +1,32 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('emergent Hexagonal World & Diurnal Time Economy', () => {
+test.describe('emergent Hexagonal World & 24XX Rules System', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('#game-canvas');
   });
 
-  test('renders initial hex world, canvas, and diurnal clock state', async ({ page }) => {
+  test('renders initial hex world, canvas, diurnal clock, and 24XX calling badges', async ({ page }) => {
     // 1. Canvas visibility
     const canvas = page.getByTestId('game-canvas');
     await expect(canvas).toBeVisible();
 
     // 2. HUD Header & Badges
     await expect(page.locator('#hud-persona')).toHaveText('A tribal wanderer');
+    await expect(page.locator('#hud-condition')).toHaveText('Healthy');
+    await expect(page.locator('#hud-background')).toHaveText('Ruin Scavenger (d8)');
     await expect(page.locator('#hud-clock')).toHaveText('Day 1 — Morning');
     await expect(page.locator('#hud-tick')).toHaveText('0');
     await expect(page.locator('#hud-coords')).toHaveText('(0, 0)');
     await expect(page.locator('#hud-weight')).toHaveText('0g / 2000g (0%)');
   });
 
-  test('handles hex movement, diurnal clock advancement, and terrain/perimeter boundary rejection', async ({ page }) => {
+  test('handles daytime hex movement, diurnal clock advancement, and terrain/perimeter boundary rejection', async ({ page }) => {
     // Initial position (0, 0) and clock Day 1 — Morning
     await expect(page.locator('#hud-coords')).toHaveText('(0, 0)');
     await expect(page.locator('#hud-clock')).toHaveText('Day 1 — Morning');
 
-    // Attempt to step West (-1, 0) into scrap wall
+    // Attempt to step West (-1, 0) into impassable scrap wall
     await page.keyboard.press('ArrowLeft');
     await expect(page.locator('#hud-coords')).toHaveText('(0, 0)');
     await expect(page.locator('#hud-clock')).toHaveText('Day 1 — Morning');
@@ -34,21 +36,21 @@ test.describe('emergent Hexagonal World & Diurnal Time Economy', () => {
     const log = page.getByTestId('event-log');
     await expect(log).toContainText('Path blocked by scrap wall.');
 
-    // Step North-West to (0, -1)
-    await page.keyboard.press('q');
-    await expect(page.locator('#hud-coords')).toHaveText('(0, -1)');
+    // Step East to (1, 0) in morning -> afternoon
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('#hud-coords')).toHaveText('(1, 0)');
     await expect(page.locator('#hud-clock')).toHaveText('Day 1 — Afternoon');
     await expect(page.locator('#hud-tick')).toHaveText('1');
 
-    // Step North-West again to (0, -2)
-    await page.keyboard.press('q');
-    await expect(page.locator('#hud-coords')).toHaveText('(0, -2)');
+    // Step East again to (2, 0) in afternoon -> night
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('#hud-coords')).toHaveText('(2, 0)');
     await expect(page.locator('#hud-clock')).toHaveText('Day 1 — Night');
     await expect(page.locator('#hud-tick')).toHaveText('2');
 
-    // Step North-West again -> Perimeter boundary rejection (radius 2 exceeded)
-    await page.keyboard.press('q');
-    await expect(page.locator('#hud-coords')).toHaveText('(0, -2)');
+    // Step East again -> (3, 0) exceeds radius 2 (Boundary check takes precedence over peril check)
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('#hud-coords')).toHaveText('(2, 0)');
     await expect(page.locator('#hud-clock')).toHaveText('Day 1 — Night');
     await expect(page.locator('#hud-tick')).toHaveText('2');
     await expect(log).toContainText('You reached the perimeter of the territory, turn back.');
@@ -107,7 +109,7 @@ test.describe('emergent Hexagonal World & Diurnal Time Economy', () => {
     await expect(page.locator('#hud-weight')).toContainText('0g / 2000g (0%)');
   });
 
-  test('rests through watches and transitions across midnight to dawn', async ({ page }) => {
+  test('rests through watches, recovers conditions, and transitions across midnight to dawn', async ({ page }) => {
     await expect(page.locator('#hud-clock')).toHaveText('Day 1 — Morning');
     await expect(page.locator('#hud-tick')).toHaveText('0');
 
@@ -129,5 +131,43 @@ test.describe('emergent Hexagonal World & Diurnal Time Economy', () => {
     // Chronicle reports dawn breaking
     const log = page.getByTestId('event-log');
     await expect(log).toContainText('Dawn breaks across the territory.');
+  });
+
+  test('intercepts night traversal with 24XX peril modal and resolves with dice cast', async ({ page }) => {
+    // Advance to night via 2 rests
+    await page.keyboard.press('r');
+    await page.keyboard.press('r');
+    await expect(page.locator('#hud-clock')).toHaveText('Day 1 — Night');
+
+    // Attempt to traverse into the dark (NW) without a portable light source
+    await page.keyboard.press('q');
+
+    // Risk modal overlay must become visible
+    const modal = page.getByTestId('risk-modal');
+    await expect(modal).toBeVisible();
+    await expect(page.locator('#risk-title')).toHaveText('Pitch Darkness Navigation');
+    await expect(page.locator('#risk-severity')).toHaveText('MODERATE');
+
+    // Test Abort button: safely cancels without spending time
+    const abortBtn = page.locator('#btn-abort-risk');
+    await abortBtn.click();
+
+    // Modal closes and clock unadvanced
+    await expect(modal).not.toBeVisible();
+    await expect(page.locator('#hud-coords')).toHaveText('(0, 0)');
+    await expect(page.locator('#hud-tick')).toHaveText('2');
+
+    // Attempt night travel again -> modal reappears
+    await page.keyboard.press('q');
+    await expect(modal).toBeVisible();
+
+    // Resolve risk by clicking "Rely on Instinct"
+    const instinctBtn = page.locator('#btn-rely-instinct');
+    await instinctBtn.click();
+
+    // Modal closes and 24XX roll event appears in Chronicle
+    await expect(modal).not.toBeVisible();
+    const log = page.getByTestId('event-log');
+    await expect(log).toContainText('[24XX] Cast d6: Rolled');
   });
 });

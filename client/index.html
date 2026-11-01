@@ -14,6 +14,8 @@
           <span class="subtitle">far-future humanistic sandbox simulation</span>
         </div>
         <div class="header-right">
+          <span class="badge" id="condition-badge">Condition: <strong id="hud-condition">Healthy</strong></span>
+          <span class="badge" id="background-badge">Calling: <strong id="hud-background">Ruin Scavenger (d8)</strong></span>
           <span class="badge" id="clock-badge">Time: <strong id="hud-clock">Day 1 — Morning</strong></span>
           <span class="badge" id="tick-badge">Watch: <strong id="hud-tick">0</strong></span>
           <span class="badge" id="player-badge">Persona: <strong id="hud-persona">A tribal wanderer</strong></span>
@@ -82,6 +84,32 @@
           </div>
         </aside>
       </main>
+
+      <!-- 24XX Risk Prompt Modal -->
+      <div id="risk-modal-overlay" class="modal-overlay hidden" data-testid="risk-modal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <span class="modal-tag" id="risk-severity">PERILOUS</span>
+            <h2 id="risk-title">Pitch Darkness Navigation</h2>
+          </div>
+          <p id="risk-desc" class="modal-description">Attempting to traverse the treacherous wastes at night without light.</p>
+          <div class="modal-stakes">
+            <span class="stakes-label">Stakes:</span>
+            <span id="risk-stakes">Disorientation (extra watch) or injury.</span>
+          </div>
+          <div class="modal-options">
+            <label class="modal-label" for="risk-sacrifice-select">Sacrifice Gear (Absorbs Disaster):</label>
+            <select id="risk-sacrifice-select" class="modal-select">
+              <option value="">None (Take Full Risk)</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button id="btn-invoke-background" class="btn-action btn-primary">Invoke Background (d8)</button>
+            <button id="btn-rely-instinct" class="btn-action">Rely on Instinct (d6)</button>
+            <button id="btn-abort-risk" class="btn-action btn-danger">Abort & Retreat (0 Watches)</button>
+          </div>
+        </div>
+      </div>
     </div>
     <script type="module" src="./src/main.ts"></script>
   </body>
