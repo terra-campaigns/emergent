@@ -10,6 +10,7 @@ import {
   HexDiscovery,
   HexGameAction,
   HexGameEvent,
+  HexPlayerEntity,
   HexSimulationResult,
   HexTile,
   HexWorldState,
@@ -22,6 +23,60 @@ import { RiskPrompt, StepDie, WandererCondition } from '../rules/types.js';
  */
 export function getHexTile(state: HexWorldState, coord: { q: number; r: number }): HexTile | undefined {
   return state.tiles.find((t) => hexEqual(t.coordinate, coord));
+}
+
+/**
+ * Pure helper completing the spatial and discovery effects of a successful or setback peril source action.
+ */
+function completePerilSourceAction(
+  state: HexWorldState,
+  sourceAction: HexGameAction,
+  events: HexGameEvent[]
+): { nextPlayer: HexPlayerEntity; nextTiles: readonly HexTile[] } {
+  let nextPlayer = state.player;
+  let nextTiles = state.tiles;
+
+  if (sourceAction.type === 'TRAVEL') {
+    const targetCoord = hexNeighbor(state.player.coordinate, sourceAction.direction);
+    nextPlayer = Object.freeze({ ...nextPlayer, coordinate: targetCoord });
+    events.push({
+      type: 'PLAYER_TRAVELLED',
+      from: state.player.coordinate,
+      to: targetCoord,
+      costWatches: 1,
+    });
+  } else if (sourceAction.type === 'SEARCH') {
+    const currentTile = getHexTile(state, state.player.coordinate);
+    if (currentTile) {
+      const hiddenDiscoveries = currentTile.discoveries.filter((d) => d.visibility === 'hidden');
+      events.push({
+        type: 'HEX_SEARCHED',
+        coordinate: state.player.coordinate,
+        revealedCount: hiddenDiscoveries.length,
+      });
+      const updatedDiscoveries = currentTile.discoveries.map((d) => {
+        if (d.visibility === 'hidden') {
+          const revealed = Object.freeze({ ...d, visibility: 'revealed' as const });
+          events.push({
+            type: 'DISCOVERY_REVEALED',
+            coordinate: state.player.coordinate,
+            discovery: revealed,
+          });
+          return revealed;
+        }
+        return d;
+      });
+      nextTiles = Object.freeze(
+        state.tiles.map((t) =>
+          hexEqual(t.coordinate, state.player.coordinate)
+            ? Object.freeze({ ...t, discoveries: Object.freeze(updatedDiscoveries) })
+            : t
+        )
+      );
+    }
+  }
+
+  return { nextPlayer, nextTiles };
 }
 
 /**
@@ -465,45 +520,9 @@ export function hexStep(state: HexWorldState, action: HexGameAction): HexSimulat
         events.push({ type: 'WATCH_ADVANCED', clock: nextClock });
 
         // Complete source action
-        if (prompt.sourceAction.type === 'TRAVEL') {
-          const targetCoord = hexNeighbor(state.player.coordinate, prompt.sourceAction.direction);
-          nextPlayer = Object.freeze({ ...nextPlayer, coordinate: targetCoord });
-          events.push({
-            type: 'PLAYER_TRAVELLED',
-            from: state.player.coordinate,
-            to: targetCoord,
-            costWatches: 1,
-          });
-        } else if (prompt.sourceAction.type === 'SEARCH') {
-          const currentTile = getHexTile(state, state.player.coordinate);
-          if (currentTile) {
-            const hiddenDiscoveries = currentTile.discoveries.filter((d) => d.visibility === 'hidden');
-            events.push({
-              type: 'HEX_SEARCHED',
-              coordinate: state.player.coordinate,
-              revealedCount: hiddenDiscoveries.length,
-            });
-            const updatedDiscoveries = currentTile.discoveries.map((d) => {
-              if (d.visibility === 'hidden') {
-                const revealed = Object.freeze({ ...d, visibility: 'revealed' as const });
-                events.push({
-                  type: 'DISCOVERY_REVEALED',
-                  coordinate: state.player.coordinate,
-                  discovery: revealed,
-                });
-                return revealed;
-              }
-              return d;
-            });
-            nextTiles = Object.freeze(
-              state.tiles.map((t) =>
-                hexEqual(t.coordinate, state.player.coordinate)
-                  ? Object.freeze({ ...t, discoveries: Object.freeze(updatedDiscoveries) })
-                  : t
-              )
-            );
-          }
-        }
+        const completed = completePerilSourceAction(state, prompt.sourceAction, events);
+        nextPlayer = completed.nextPlayer;
+        nextTiles = completed.nextTiles;
       } else if (roll.outcome === 'setback') {
         // Advance clock by 2 watches (1 base + 1 delay complication)
         const adv1 = advanceClock(nextClock);
@@ -517,45 +536,9 @@ export function hexStep(state: HexWorldState, action: HexGameAction): HexSimulat
         events.push({ type: 'WATCH_ADVANCED', clock: nextClock });
 
         // Complete source action with delay
-        if (prompt.sourceAction.type === 'TRAVEL') {
-          const targetCoord = hexNeighbor(state.player.coordinate, prompt.sourceAction.direction);
-          nextPlayer = Object.freeze({ ...nextPlayer, coordinate: targetCoord });
-          events.push({
-            type: 'PLAYER_TRAVELLED',
-            from: state.player.coordinate,
-            to: targetCoord,
-            costWatches: 1,
-          });
-        } else if (prompt.sourceAction.type === 'SEARCH') {
-          const currentTile = getHexTile(state, state.player.coordinate);
-          if (currentTile) {
-            const hiddenDiscoveries = currentTile.discoveries.filter((d) => d.visibility === 'hidden');
-            events.push({
-              type: 'HEX_SEARCHED',
-              coordinate: state.player.coordinate,
-              revealedCount: hiddenDiscoveries.length,
-            });
-            const updatedDiscoveries = currentTile.discoveries.map((d) => {
-              if (d.visibility === 'hidden') {
-                const revealed = Object.freeze({ ...d, visibility: 'revealed' as const });
-                events.push({
-                  type: 'DISCOVERY_REVEALED',
-                  coordinate: state.player.coordinate,
-                  discovery: revealed,
-                });
-                return revealed;
-              }
-              return d;
-            });
-            nextTiles = Object.freeze(
-              state.tiles.map((t) =>
-                hexEqual(t.coordinate, state.player.coordinate)
-                  ? Object.freeze({ ...t, discoveries: Object.freeze(updatedDiscoveries) })
-                  : t
-              )
-            );
-          }
-        }
+        const completed = completePerilSourceAction(state, prompt.sourceAction, events);
+        nextPlayer = completed.nextPlayer;
+        nextTiles = completed.nextTiles;
       } else {
         // Disaster (1-2)
         // Advance clock by 1 watch

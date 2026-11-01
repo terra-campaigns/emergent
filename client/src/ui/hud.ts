@@ -169,11 +169,14 @@ export class HudController {
     this.riskStakesEl.textContent = prompt.stakes;
 
     // Update button labels with actual active die face
+    const isApplicable = prompt.applicableBackgroundId === state.character.background.id;
     const isHindered = state.character.condition === 'hindered';
     const bgDie = isHindered ? 'd4' : state.character.background.die;
     const instinctDie = isHindered ? 'd4' : prompt.defaultDie;
 
-    this.btnInvokeBackground.textContent = `Invoke ${state.character.background.name} (${bgDie})`;
+    this.btnInvokeBackground.textContent = isApplicable
+      ? `Invoke ${state.character.background.name} (${bgDie})`
+      : `Invoke ${state.character.background.name} (Not Applicable — Rolls ${instinctDie})`;
     this.btnRelyInstinct.textContent = `Rely on Instinct (${instinctDie})`;
 
     // Populate sacrifice options
@@ -208,7 +211,8 @@ export class HudController {
     if (hiddenDiscoveries.length > 0) {
       const hint = document.createElement('div');
       hint.className = 'discovery-notice';
-      hint.textContent = `${hiddenDiscoveries.length} hidden anomaly detected in this sector. Survey the hex to reveal.`;
+      const anomalyWord = hiddenDiscoveries.length === 1 ? 'anomaly' : 'anomalies';
+      hint.textContent = `${hiddenDiscoveries.length} hidden ${anomalyWord} detected in this sector. Survey the hex to reveal.`;
       this.groundListEl.appendChild(hint);
     }
 
@@ -315,13 +319,15 @@ export class HudController {
           entry.textContent = `[${timeLabel}] Travelled to (${ev.to.q}, ${ev.to.r}).`;
           break;
 
-        case 'HEX_SEARCHED':
+        case 'HEX_SEARCHED': {
           entry.classList.add('searched');
+          const anomalyWord = ev.revealedCount === 1 ? 'anomaly' : 'anomalies';
           entry.textContent =
             ev.revealedCount > 0
-              ? `[${timeLabel}] Surveyed hex (${ev.coordinate.q}, ${ev.coordinate.r}): Uncovered ${ev.revealedCount} hidden anomaly.`
+              ? `[${timeLabel}] Surveyed hex (${ev.coordinate.q}, ${ev.coordinate.r}): Uncovered ${ev.revealedCount} hidden ${anomalyWord}.`
               : `[${timeLabel}] Surveyed hex (${ev.coordinate.q}, ${ev.coordinate.r}): Found only dust and silence.`;
           break;
+        }
 
         case 'DISCOVERY_REVEALED':
           entry.classList.add('collected');

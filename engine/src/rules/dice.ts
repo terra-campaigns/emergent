@@ -7,7 +7,7 @@ import { RollOutcome, RollResult, STEP_DIE_FACES, StepDie } from './types.js';
 
 /**
  * Pure Mulberry32 pseudo-random number generator.
- * Advances state and returns a normalized float in [0, 1).
+ * Advances state and returns a normalised float in [0, 1).
  */
 export function nextRng(state: number): { nextState: number; value: number } {
   let t = (state + 0x6d2b79f5) | 0;
