@@ -22,7 +22,7 @@
 *How does the 6-directional hexagonal navigation feel (Q/E/A/D/Z/C and Arrow keys)? Does the pointy-topped geometry render cleanly? Do the boundary and barrier collision rejections (e.g. scrap wall, titan bulkhead, waterway) make spatial sense?*
 
 ```text
-[Write your notes here.]
+I didn't like the travel with keys for hex grid. I would like it to be done with the mouse. If the player selects somewhere 2 hexes away it should teach them to select the imediate hex. I got stuck at 1,-2 with "npm run dev"
 ```
 
 ---

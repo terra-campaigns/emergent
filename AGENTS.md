@@ -89,7 +89,7 @@ All items added to task boards (`TASKS.md`) must be tagged with one of three exe
 
 ## 10. Pull Request Code Review Framework & Reviewer Persona
 
-Every Pull Request targeting `main` must be reviewed by the **Principal Code Reviewer ("The Gatekeeper")** agent defined in [`.agents/agents/code-reviewer/agent.md`](.agents/agents/code-reviewer/agent.md) using the [`review-pr`](.agents/skills/review-pr/SKILL.md) skill:
+Every Pull Request targeting `main` must be reviewed by the **Principal Code Reviewer ("The Gatekeeper")** agent using the global [`review-pr`](https://github.com/efsalvarenga/artifice/tree/main/skills/review-pr) skill from `artifice`:
 
 * **The 8-Pillar Code Review Framework (Google Engineering Practices + EGM Governance):**
   1. **`DESIGN` (Design & EGM Contract Alignment):** Verifies that every feature has an approved specification in `docs/designs/`, a passing Goldfish review in `docs/reviews/`, zero specification drift, and strict decoupling between `engine/` and `client/`.
@@ -110,7 +110,7 @@ Every Pull Request targeting `main` must be reviewed by the **Principal Code Rev
 
 ## 11. Developer Coach Persona & Framework Scouting
 
-Architectural improvements, framework upgrades, developer ergonomics, and ecosystem scouting are championed by the **Principal Developer Coach ("The Catalyst")** agent defined in [`.agents/agents/developer-coach/agent.md`](.agents/agents/developer-coach/agent.md) using the [`coach-frameworks`](.agents/skills/coach-frameworks/SKILL.md) skill:
+Architectural improvements, framework upgrades, developer ergonomics, and ecosystem scouting are championed by the **Principal Developer Coach ("The Catalyst")** agent using the global [`coach-frameworks`](https://github.com/efsalvarenga/artifice/tree/main/skills/coach-frameworks) skill from `artifice`:
 
 * **Dual Coaching Mandate:**
   1. **Framework Mastery & Ergonomics:** Continuously audits how teams and agents interact with established frameworks (Elephant-Goldfish Model / EGM, 8-Pillar Review, Guido Autonomy, headless deterministic simulation), diagnosing friction and providing automated helpers, scripts, and ergonomic guides to follow them better.
